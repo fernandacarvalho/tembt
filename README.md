@@ -1,2 +1,2 @@
-# tembt-ios
-TemBT iOS App
+# tembt
+Mobile App available for iOS and Android
