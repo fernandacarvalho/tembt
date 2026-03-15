@@ -11,7 +11,8 @@ final class MapViewModelHost: ObservableObject {
         isLoading: true,
         isPermissionRequired: false,
         isDenied: false,
-        center: nil
+        center: nil,
+        error: nil
     )
 
     private let vmIos: MapViewModelIos

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.tembt.android.ui.map.MapScreen
+import com.tembt.android.ui.RootScreen
 import com.tembt.android.ui.theme.TembtTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TembtTheme {
-                MapScreen()
+                RootScreen()
             }
         }
     }

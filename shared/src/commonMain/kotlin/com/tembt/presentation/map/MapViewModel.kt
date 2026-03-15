@@ -3,7 +3,7 @@ package com.tembt.presentation.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tembt.domain.model.LocationPermissionStatus
-import com.tembt.domain.model.MapCoordinates
+import com.tembt.domain.usecase.GetCourtLocationUseCase
 import com.tembt.platform.LocationServiceContract
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,13 +15,9 @@ import kotlinx.coroutines.launch
 
 // Note: `androidx.lifecycle.ViewModel` is available in commonMain via the KMP artifact
 // `org.jetbrains.androidx.lifecycle:lifecycle-viewmodel` — this is not an Android import leak.
-private val MAP_CENTER = MapCoordinates(
-    latitude = -22.9867693,
-    longitude = -43.2041565
-)
-
 class MapViewModel(
-    private val locationService: LocationServiceContract
+    private val locationService: LocationServiceContract,
+    private val getCourtLocation: GetCourtLocationUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Loading)
@@ -50,10 +46,30 @@ class MapViewModel(
     }
 
     fun checkPermission() {
-        _uiState.value = when (locationService.getPermissionStatus()) {
-            LocationPermissionStatus.GRANTED -> MapUiState.MapReady(MAP_CENTER)
-            LocationPermissionStatus.DENIED -> MapUiState.PermissionRequired(LocationPermissionStatus.DENIED)
-            LocationPermissionStatus.NOT_DETERMINED -> MapUiState.PermissionRequired(LocationPermissionStatus.NOT_DETERMINED)
+        when (locationService.getPermissionStatus()) {
+            LocationPermissionStatus.GRANTED -> {
+                // Don't re-fetch if map is already ready (e.g. on every onResume)
+                if (_uiState.value is MapUiState.MapReady) return
+                fetchCourtAndShowMap()
+            }
+            LocationPermissionStatus.DENIED ->
+                _uiState.value = MapUiState.PermissionRequired(LocationPermissionStatus.DENIED)
+            LocationPermissionStatus.NOT_DETERMINED ->
+                _uiState.value = MapUiState.PermissionRequired(LocationPermissionStatus.NOT_DETERMINED)
+        }
+    }
+
+    private fun fetchCourtAndShowMap() {
+        viewModelScope.launch {
+            _uiState.value = MapUiState.Loading
+            getCourtLocation().fold(
+                onSuccess = { _uiState.value = MapUiState.MapReady(it) },
+                onFailure = {
+                    _uiState.value = MapUiState.Error(
+                        it.message ?: "Erro ao carregar a quadra."
+                    )
+                }
+            )
         }
     }
 }

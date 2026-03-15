@@ -19,6 +19,20 @@ struct MapScreen: View {
                     onOpenSettings: { host.checkPermission() }
                 )
 
+            } else if let error = host.uiState.error {
+                VStack(spacing: 16) {
+                    Text("Erro ao carregar")
+                        .font(.headline)
+                    Text(error)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                    Button("Tentar novamente") { host.checkPermission() }
+                        .buttonStyle(.borderedProminent)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
             } else if let center = host.uiState.center {
                 MapViewRepresentable(center: center)
                     .ignoresSafeArea()
