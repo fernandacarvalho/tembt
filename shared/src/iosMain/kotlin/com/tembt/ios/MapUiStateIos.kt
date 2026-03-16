@@ -10,9 +10,10 @@ import com.tembt.presentation.map.MapUiState
 class MapUiStateIos(
     val isLoading: Boolean,
     val isPermissionRequired: Boolean,
-    val isDenied: Boolean,      // true when permission was explicitly denied → show Settings button
-    val center: MapCoordinates?, // non-null only when map is ready to display
-    val error: String?           // non-null when a network error occurred
+    val isDenied: Boolean,
+    val center: MapCoordinates?,
+    val error: String?,
+    val players: List<PlayerIos>
 ) {
     companion object {
         fun from(state: MapUiState): MapUiStateIos = when (state) {
@@ -21,28 +22,32 @@ class MapUiStateIos(
                 isPermissionRequired = false,
                 isDenied = false,
                 center = null,
-                error = null
+                error = null,
+                players = emptyList()
             )
             is MapUiState.PermissionRequired -> MapUiStateIos(
                 isLoading = false,
                 isPermissionRequired = true,
                 isDenied = state.status == LocationPermissionStatus.DENIED,
                 center = null,
-                error = null
+                error = null,
+                players = emptyList()
             )
             is MapUiState.MapReady -> MapUiStateIos(
                 isLoading = false,
                 isPermissionRequired = false,
                 isDenied = false,
                 center = state.center,
-                error = null
+                error = null,
+                players = state.players.map { PlayerIos(it.uuid, it.name, it.lat, it.lng) }
             )
             is MapUiState.Error -> MapUiStateIos(
                 isLoading = false,
                 isPermissionRequired = false,
                 isDenied = false,
                 center = null,
-                error = state.message
+                error = state.message,
+                players = emptyList()
             )
         }
     }

@@ -29,6 +29,14 @@ class MapViewModelIos(private val viewModel: MapViewModel) {
         viewModel.checkPermission()
     }
 
+    fun refreshPlayers() {
+        viewModel.refreshPlayers()
+    }
+
+    fun sendLocation() {
+        viewModel.sendLocation()
+    }
+
     // Cancels the entire scope — stops all collection. Call from Swift deinit.
     fun clear() {
         scope.cancel()

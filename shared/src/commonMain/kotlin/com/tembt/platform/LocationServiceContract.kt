@@ -7,4 +7,6 @@ import com.tembt.domain.model.LocationPermissionStatus
 interface LocationServiceContract {
     fun getPermissionStatus(): LocationPermissionStatus
     fun markPermissionRequested()
+    /** Returns the most recently cached device coordinates, or null if unavailable. */
+    fun getCurrentLocation(): Pair<Double, Double>?
 }

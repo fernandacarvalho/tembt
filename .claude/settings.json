@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :shared:assembleSharedDebugXCFramework)",
+      "Bash(./gradlew :shared:assembleSharedDebugXCFramework --info)",
+      "Read(//Users/fernandacarvalho/.claude/**)",
+      "Bash(./gradlew :androidApp:assembleDebug)",
+      "Bash(./gradlew :shared:assembleSharedDebugXCFramework :androidApp:assembleDebug)",
+      "Bash(grep -v \"^$\")"
+    ],
+    "additionalDirectories": [
+      "/Users/fernandacarvalho/.claude"
+    ]
+  }
+}

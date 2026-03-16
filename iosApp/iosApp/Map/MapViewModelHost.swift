@@ -12,7 +12,8 @@ final class MapViewModelHost: ObservableObject {
         isPermissionRequired: false,
         isDenied: false,
         center: nil,
-        error: nil
+        error: nil,
+        players: []
     )
 
     private let vmIos: MapViewModelIos
@@ -26,6 +27,14 @@ final class MapViewModelHost: ObservableObject {
 
     func checkPermission() {
         vmIos.checkPermission()
+    }
+
+    func refreshPlayers() {
+        vmIos.refreshPlayers()
+    }
+
+    func sendLocation() {
+        vmIos.sendLocation()
     }
 
     deinit {

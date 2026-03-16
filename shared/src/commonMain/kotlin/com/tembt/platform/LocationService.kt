@@ -11,4 +11,7 @@ expect class LocationService {
     // Called by the platform UI layer right before launching the system permission dialog,
     // so subsequent getPermissionStatus() calls can distinguish NOT_DETERMINED from DENIED.
     fun markPermissionRequested()
+
+    /** Returns the most recently cached device coordinates, or null if unavailable. */
+    fun getCurrentLocation(): Pair<Double, Double>?
 }
