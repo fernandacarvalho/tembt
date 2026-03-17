@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tembt.domain.model.LocationPermissionStatus
 import com.tembt.domain.usecase.GetCourtLocationUseCase
 import com.tembt.domain.usecase.GetPlayersAtCourtUseCase
-import com.tembt.domain.usecase.SendLocationUseCase
+import com.tembt.domain.usecase.SendLocation
 import com.tembt.platform.LocationServiceContract
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ class MapViewModel(
     private val locationService: LocationServiceContract,
     private val getCourtLocation: GetCourtLocationUseCase,
     private val getPlayersAtCourt: GetPlayersAtCourtUseCase,
-    private val sendLocationUseCase: SendLocationUseCase
+    private val sendLocationUseCase: SendLocation
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Loading)

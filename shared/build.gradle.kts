@@ -16,6 +16,9 @@ kotlin {
         }
     }
 
+    // Pure JVM target — runs commonTest without requiring the Android SDK
+    jvm()
+
     val xcf = XCFramework("shared")
     listOf(
         iosX64(),
@@ -39,6 +42,12 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.logging)
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
         }
 
         androidMain.dependencies {

@@ -112,6 +112,47 @@ val pushModule = module {
 
 ---
 
+---
+
+## Testability Contract
+
+Constructor injection and interface-based dependencies are not only an architecture rule — they are what makes unit testing possible. **A class that cannot accept a spy in place of its dependency is not correctly designed.**
+
+### Rules
+
+- Every constructor parameter must be an **interface** type — not a concrete class
+- No dependency may be created inside the class body (`= ConcreteImpl()`, `= KtorClient()`, etc.)
+- Platform types (`Context`, `UIViewController`, `HttpClient`) must never appear in a constructor — wrap them behind an interface first
+
+### Single-method dependencies — `fun interface`
+
+When a dependency has exactly one method (e.g., a use case injected into a ViewModel), define it as a `fun interface`. This enables the production `SendLocationUseCase` to implement it, while tests can use a lambda or a minimal spy:
+
+```kotlin
+// Correct — testable via lambda or SpySendLocation
+fun interface SendLocation {
+    suspend operator fun invoke(): Result<Unit>
+}
+
+// ViewModel injects the interface, not the use case class
+class MapViewModel(
+    private val sendLocation: SendLocation,
+    ...
+)
+
+// Koin binds the real implementation
+factory<SendLocation> { SendLocationUseCase(get(), get(), get()) }
+```
+
+### Testability checklist
+
+- [ ] Every constructor parameter is an interface (protocol), not a concrete class
+- [ ] No dependency instantiated inside the class body
+- [ ] Single-method dependencies use `fun interface` so lambda spies are possible
+- [ ] Koin module binds the interface type (`factory<Interface> { Impl(...) }`)
+
+---
+
 ## Unused Dependency Checklist (run after every edit)
 
 - [ ] Every constructor parameter is referenced in the class body

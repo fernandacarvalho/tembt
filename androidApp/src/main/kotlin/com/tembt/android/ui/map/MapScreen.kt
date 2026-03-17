@@ -128,17 +128,7 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
                     }
                 }
 
-                FloatingActionButton(
-                    onClick = { viewModel.sendLocation() },
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 32.dp),
-                    shape = CircleShape
-                ) {
-                    Text("Ir", fontWeight = FontWeight.Bold)
-                }
-
-                FloatingActionButton(
+FloatingActionButton(
                     onClick = { recenterTrigger++ },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

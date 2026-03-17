@@ -13,21 +13,16 @@ struct WelcomeScreen: View {
             content
 
             if host.uiState.isLoading {
-                Color(.systemBackground)
-                    .ignoresSafeArea()
-
+                Color.appBackground.ignoresSafeArea()
                 VStack(spacing: 16) {
-                    ProgressView()
-                        .scaleEffect(1.4)
+                    ProgressView().scaleEffect(1.4).tint(.appPrimary)
                     Text("Entrando...")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(.appBodySm)
+                        .foregroundColor(.appTextMuted)
                 }
             }
         }
-        .onAppear {
-            host.onRegistered = onRegistered
-        }
+        .onAppear { host.onRegistered = onRegistered }
     }
 
     private var content: some View {
@@ -37,33 +32,34 @@ struct WelcomeScreen: View {
 
                 // Logo
                 Text("TEMBT")
-                    .font(.system(size: 52, weight: .black, design: .rounded))
-                    .foregroundColor(.accentColor)
+                    .font(.appLogo)
+                    .foregroundColor(.appPrimary)
 
                 Spacer().frame(height: 4)
 
                 Text("Beach Tennis")
-                    .font(.title3)
-                    .foregroundColor(.secondary)
+                    .font(.appSubtitle)
+                    .foregroundColor(.appTextMuted)
 
                 Spacer().frame(height: 56)
 
                 Text("Como você quer ser chamado?")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    .font(.appH3)
+                    .foregroundColor(.appTextDark)
                     .multilineTextAlignment(.center)
 
                 Spacer().frame(height: 8)
 
                 Text("Digite seu nome para entrar no app.")
-                    .font(.body)
-                    .foregroundColor(.secondary)
+                    .font(.appBody)
+                    .foregroundColor(.appTextMuted)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
 
                 Spacer().frame(height: 32)
 
                 TextField("Seu nome", text: $name)
+                    .font(.appBody)
                     .textFieldStyle(.roundedBorder)
                     .textContentType(.name)
                     .autocapitalization(.words)
@@ -72,12 +68,13 @@ struct WelcomeScreen: View {
                     .submitLabel(.done)
                     .onSubmit { submit() }
                     .padding(.horizontal, 32)
+                    .tint(.appPrimary)
 
                 if let error = host.uiState.error {
                     Spacer().frame(height: 8)
                     Text(error)
-                        .font(.footnote)
-                        .foregroundColor(.red)
+                        .font(.appFootnote)
+                        .foregroundColor(.appSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
                 }
@@ -86,9 +83,12 @@ struct WelcomeScreen: View {
 
                 Button(action: submit) {
                     Text("Começar")
+                        .font(.appTitle)
                         .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.appPrimary)
                 .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 .padding(.horizontal, 32)
 
@@ -96,7 +96,7 @@ struct WelcomeScreen: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .background(Color(.systemBackground))
+        .background(Color.appBackground)
         .onTapGesture { nameFieldFocused = false }
     }
 

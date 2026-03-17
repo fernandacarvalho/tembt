@@ -1,9 +1,21 @@
 package com.tembt.android.ui
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tembt.android.ui.map.MapScreen
+import com.tembt.android.ui.schedule.ScheduleScreen
 import com.tembt.android.ui.welcome.WelcomeScreen
 import com.tembt.presentation.app.AppViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -15,6 +27,35 @@ fun RootScreen(viewModel: AppViewModel = koinViewModel()) {
     if (showWelcome) {
         WelcomeScreen(onRegistered = { viewModel.onRegistered() })
     } else {
-        MapScreen()
+        MainTabs()
+    }
+}
+
+@Composable
+private fun MainTabs() {
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = selectedTab == 0,
+                    onClick = { selectedTab = 0 },
+                    icon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
+                    label = { Text("Mapa") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 1,
+                    onClick = { selectedTab = 1 },
+                    icon = { Icon(Icons.Default.DateRange, contentDescription = null) },
+                    label = { Text("Agenda") }
+                )
+            }
+        }
+    ) { _ ->
+        when (selectedTab) {
+            0 -> MapScreen()
+            1 -> ScheduleScreen()
+        }
     }
 }

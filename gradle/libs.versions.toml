@@ -10,6 +10,7 @@ maplibre = "11.0.0"
 activityCompose = "1.9.2"
 ktor = "3.1.2"
 kotlinxSerialization = "1.8.0"
+turbine = "1.1.0"
 
 [libraries]
 # Coroutines
@@ -47,6 +48,10 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 
 # Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# Testing
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

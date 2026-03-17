@@ -75,22 +75,7 @@ private struct MapReadyView: View {
             .padding(.top, 56)
             .padding(.leading, 16)
 
-            Button(action: { host.sendLocation() }) {
-                Text("Ir")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .frame(width: 56, height: 56)
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
-                    .shadow(radius: 4)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-            .padding(.leading, 16)
-            .padding(.bottom, 32)
-            .ignoresSafeArea(edges: .bottom)
-
-            Button(action: { centerTrigger += 1 }) {
+Button(action: { centerTrigger += 1 }) {
                 Image(systemName: "location.fill")
                     .font(.headline)
                     .frame(width: 56, height: 56)

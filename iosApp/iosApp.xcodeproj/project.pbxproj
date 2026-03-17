@@ -17,6 +17,9 @@
 		B001000000000009 /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000B /* WelcomeScreen.swift */; };
 		B00100000000000A /* WelcomeViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000C /* WelcomeViewModelHost.swift */; };
 		B00100000000000B /* AppViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000D /* AppViewModelHost.swift */; };
+		B00100000000000C /* ScheduleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000E /* ScheduleScreen.swift */; };
+		B00100000000000D /* ScheduleViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000F /* ScheduleViewModelHost.swift */; };
+		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
 		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -34,6 +37,9 @@
 		A00100000000000B /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		A00100000000000C /* WelcomeViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModelHost.swift; sourceTree = "<group>"; };
 		A00100000000000D /* AppViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModelHost.swift; sourceTree = "<group>"; };
+		A00100000000000E /* ScheduleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleScreen.swift; sourceTree = "<group>"; };
+		A00100000000000F /* ScheduleViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModelHost.swift; sourceTree = "<group>"; };
+		A001000000000010 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,15 +106,26 @@
 			path = Welcome;
 			sourceTree = "<group>";
 		};
+		D001000000000007 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				A00100000000000E /* ScheduleScreen.swift */,
+				A00100000000000F /* ScheduleViewModelHost.swift */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
 		D001000000000005 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
 				A001000000000001 /* iOSApp.swift */,
 				A001000000000002 /* ContentView.swift */,
 				A00100000000000D /* AppViewModelHost.swift */,
+				A001000000000010 /* AppTheme.swift */,
 				D001000000000003 /* Map */,
 				D001000000000004 /* Permission */,
 				D001000000000006 /* Welcome */,
+				D001000000000007 /* Schedule */,
 				A001000000000007 /* Assets.xcassets */,
 				A001000000000009 /* Info.plist */,
 			);
@@ -215,6 +232,9 @@
 				B001000000000009 /* WelcomeScreen.swift in Sources */,
 				B00100000000000A /* WelcomeViewModelHost.swift in Sources */,
 				B00100000000000B /* AppViewModelHost.swift in Sources */,
+				B00100000000000C /* ScheduleScreen.swift in Sources */,
+				B00100000000000D /* ScheduleViewModelHost.swift in Sources */,
+				B00100000000000E /* AppTheme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

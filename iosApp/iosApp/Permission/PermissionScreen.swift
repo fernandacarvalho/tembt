@@ -15,15 +15,12 @@ struct PermissionScreen: View {
             content
 
             if isAwaitingPermission {
-                Color(.systemBackground)
-                    .ignoresSafeArea()
-
+                Color.appBackground.ignoresSafeArea()
                 VStack(spacing: 16) {
-                    ProgressView()
-                        .scaleEffect(1.4)
+                    ProgressView().scaleEffect(1.4).tint(.appPrimary)
                     Text("Verificando permissão...")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(.appBodySm)
+                        .foregroundColor(.appTextMuted)
                 }
             }
         }
@@ -45,15 +42,15 @@ struct PermissionScreen: View {
             Spacer().frame(height: 24)
 
             Text("Localização necessária")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.appH3)
+                .foregroundColor(.appTextDark)
                 .multilineTextAlignment(.center)
 
             Spacer().frame(height: 12)
 
             Text("Este app precisa da sua localização para mostrar o mapa e os pontos de interesse próximos a você.")
-                .font(.body)
-                .foregroundColor(.secondary)
+                .font(.appBody)
+                .foregroundColor(.appTextMuted)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
@@ -61,8 +58,8 @@ struct PermissionScreen: View {
 
             if isDenied {
                 Text("A permissão foi negada. Acesse as configurações para habilitá-la.")
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
+                    .font(.appBodySm)
+                    .foregroundColor(.appTextMuted)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
 
@@ -75,18 +72,22 @@ struct PermissionScreen: View {
                     onOpenSettings()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.appPrimary)
+                .font(.appTitle)
             } else {
                 Button("Permitir localização") {
                     isAwaitingPermission = true
                     locationRequester.requestPermission()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.appPrimary)
+                .font(.appTitle)
             }
 
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
+        .background(Color.appBackground)
     }
 }
 
@@ -110,8 +111,6 @@ final class LocationPermissionRequester: NSObject, ObservableObject, CLLocationM
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         Task { @MainActor in
-            // Only notify if authorization is no longer undetermined
-            // (avoids firing on initial load before any request is made)
             let status = manager.authorizationStatus
             if status != .notDetermined {
                 onAuthorizationChanged?()

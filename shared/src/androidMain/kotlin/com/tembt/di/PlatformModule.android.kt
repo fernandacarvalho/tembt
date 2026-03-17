@@ -1,5 +1,6 @@
 package com.tembt.di
 
+import com.tembt.platform.DeviceIdentityProvider
 import com.tembt.platform.LocationService
 import com.tembt.platform.LocationServiceContract
 import com.tembt.platform.PlayerStorage
@@ -10,4 +11,5 @@ import org.koin.dsl.module
 val androidPlatformModule = module {
     single<LocationServiceContract> { LocationService(androidContext()) }
     single<PlayerStorage> { PlayerStorageImpl(androidContext()) }
+    single<DeviceIdentityProvider> { get<PlayerStorage>() }
 }

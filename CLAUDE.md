@@ -162,7 +162,7 @@ struct UserCard: View {
 ## Maps
 
 - Maps are platform-specific UI; do not attempt to share map view code
-- **Android:** use Google Maps Compose (`maps-compose`) in `androidApp`
+- **Android:** use MapLibre (`org.maplibre.gl:android-sdk`) in `androidApp` — open-source, no API key required
 - **iOS:** use `MapKit` / `MKMapView` via `UIViewRepresentable` in `iosApp`
 - Shared logic (coordinates, POI models, route calculation requests) lives in `commonMain`
 - Define `expect class LocationService` in `commonMain`; platform actuals use GPS APIs
@@ -228,6 +228,94 @@ For all other screens, implement UI in both `androidApp` and `iosApp` consuming 
 | Maps (iOS) | MapKit (native) |
 | Push (Android) | Firebase Cloud Messaging |
 | Push (iOS) | APNs + UNUserNotificationCenter |
+
+---
+
+## Test-Driven Development (TDD)
+
+All new behaviors must be covered by tests. Follow the classical TDD cycle:
+
+```
+1. Define the behavior (what should the code do?)
+2. Write a failing test that describes that behavior
+3. Write the minimum code to make the test pass
+4. Run the test — confirm it fails first, then passes
+5. Refactor if needed, keeping tests green
+```
+
+### Test location
+
+```
+shared/src/commonTest/kotlin/com/tembt/
+  fake/                        # Fake implementations of interfaces (no mocking libraries)
+  domain/usecase/              # UseCase unit tests
+  presentation/map/            # MapViewModel tests
+  presentation/welcome/        # WelcomeViewModel tests
+  presentation/schedule/       # ScheduleViewModel tests
+```
+
+### Test setup — ViewModel tests
+
+ViewModels use `viewModelScope` which runs on `Dispatchers.Main`. Tests must:
+
+```kotlin
+private val testDispatcher = StandardTestDispatcher()
+
+@BeforeTest fun setUp() = Dispatchers.setMain(testDispatcher)
+@AfterTest  fun tearDown() = Dispatchers.resetMain()
+
+@Test
+fun `behavior description`() = runTest(testDispatcher) {
+    // arrange — configure fakes
+    // act     — create VM, call methods
+    advanceUntilIdle()
+    // assert  — check uiState.value
+}
+```
+
+Use `runCurrent()` to advance only to the first suspension point (e.g., to test the Loading guard).
+Use `advanceUntilIdle()` to run all pending coroutines to completion.
+
+### Fakes over mocks
+
+Use hand-written fake implementations in `commonTest/fake/`. Each fake:
+- Implements the production interface
+- Has a `willReturn(result)` setter to control behavior per test
+- Exposes `callCount` / `lastXxx` fields to verify interactions
+
+Never use a mocking library. Fakes are explicit, portable across platforms, and have no reflection overhead.
+
+### What to test
+
+| Layer | What to test |
+|---|---|
+| UseCase | Input/output contract: correct args forwarded, success saves to storage, failure does not |
+| ViewModel | State transitions per event: Loading → Ready/Error, debounce guards, event emissions |
+| Repository | Not tested in unit tests — covered by integration tests when available |
+| Platform UI | Not unit-tested — Composables and SwiftUI views are verified manually / via snapshot tests |
+
+### Testing SharedFlow events
+
+Use Turbine for asserting `SharedFlow` emissions:
+
+```kotlin
+vm.uiEvent.test {
+    vm.onOpenSettingsRequested()
+    advanceUntilIdle()
+    assertEquals(MapUiEvent.OpenAppSettings, awaitItem())
+}
+```
+
+### Naming conventions for tests
+
+```
+given [precondition], when [action], [expected outcome]
+```
+
+Examples:
+- `given permission DENIED on init, state is PermissionRequired with DENIED`
+- `given registration fails, storage is not updated`
+- `given state is not Ready, when checkin called, it is ignored`
 
 ---
 
