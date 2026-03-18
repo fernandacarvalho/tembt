@@ -5,6 +5,18 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Required for continuous background location monitoring -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- Required for foreground service (API 28+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Foreground service type: location (API 34+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- Required to schedule exact alarms (API 31+); declared but user must grant via Settings -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Allows the alarm to fire when the device is idle (doze mode) -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- Receive the BOOT_COMPLETED broadcast to re-arm the alarm after reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".TembtApp"
@@ -24,6 +36,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Receives the AlarmManager broadcast that starts location monitoring,
+             the BOOT_COMPLETED broadcast to re-arm the alarm after reboot, and
+             the user-initiated pause action from the foreground service notification -->
+        <receiver
+            android:name=".background.CourtMonitoringReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tembt.android.ACTION_START_COURT_MONITORING" />
+                <action android:name="com.tembt.android.ACTION_PAUSE_COURT_MONITORING" />
+                <!-- Re-arm alarm after device reboot -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Foreground service that runs the adaptive location-monitoring loop -->
+        <service
+            android:name=".background.CourtMonitoringForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
     </application>
 

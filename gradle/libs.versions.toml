@@ -11,6 +11,7 @@ activityCompose = "1.9.2"
 ktor = "3.1.2"
 kotlinxSerialization = "1.8.0"
 turbine = "1.1.0"
+kotlinxDatetime = "0.6.1"
 
 [libraries]
 # Coroutines
@@ -48,6 +49,9 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 
 # Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# DateTime
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 
 # Testing
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
