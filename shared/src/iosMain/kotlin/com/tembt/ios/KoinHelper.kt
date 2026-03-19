@@ -10,6 +10,7 @@ import com.tembt.platform.PlayerStorage
 import com.tembt.presentation.app.AppViewModel
 import com.tembt.presentation.map.MapViewModel
 import com.tembt.presentation.schedule.ScheduleViewModel
+import com.tembt.presentation.tournament.TournamentViewModel
 import com.tembt.presentation.welcome.WelcomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,7 @@ object KoinHelper : KoinComponent {
     fun getWelcomeViewModelIos(): WelcomeViewModelIos = WelcomeViewModelIos(get<WelcomeViewModel>())
     fun getAppViewModelIos(): AppViewModelIos = AppViewModelIos(get<AppViewModel>())
     fun getScheduleViewModelIos(): ScheduleViewModelIos = ScheduleViewModelIos(get<ScheduleViewModel>())
+    fun getTournamentViewModelIos(): TournamentViewModelIos = TournamentViewModelIos(get<TournamentViewModel>())
 
     // Exposed for SwiftUI to read the initial value synchronously and avoid a flash
     fun isPlayerRegistered(): Boolean = get<PlayerStorage>().isRegistered()

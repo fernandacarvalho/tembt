@@ -42,11 +42,13 @@ android {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(libs.kotlinx.datetime)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
     implementation(libs.compose.foundation)
     implementation(libs.androidx.activity.compose)
     implementation(libs.lifecycle.runtime.compose)
@@ -54,6 +56,7 @@ dependencies {
     implementation(libs.maplibre.android)
 
     implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     implementation(libs.koin.compose.viewmodel)
 
     debugImplementation(libs.compose.ui.tooling)

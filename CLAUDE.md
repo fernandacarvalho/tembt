@@ -199,6 +199,57 @@ For all other screens, implement UI in both `androidApp` and `iosApp` consuming 
 
 ---
 
+## Adding a New Screen
+
+Every new screen requires changes in three places. Follow these steps in order.
+
+### 1. Android — create the Composable
+
+Create `androidApp/src/main/kotlin/com/tembt/android/ui/<feature>/<Feature>Screen.kt`.
+
+If the screen needs to appear as a tab, register it in `RootScreen.kt`:
+- Add a `NavigationBarItem` with a Material icon from `Icons.Default.*` or `Icons.AutoMirrored.Filled.*`
+- Add the screen to the `when (selectedTab)` block
+
+### 2. iOS — create the SwiftUI view
+
+Create `iosApp/iosApp/<Feature>/<Feature>Screen.swift`.
+
+**Then register the file in `iosApp/iosApp.xcodeproj/project.pbxproj`** — Xcode does not pick up new files automatically when they are written from outside the IDE. Three sections must be updated:
+
+```
+# 1. PBXFileReference — declares the file
+A0010000000000XX /* FeatureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureScreen.swift; sourceTree = "<group>"; };
+
+# 2. PBXBuildFile — adds it to compilation
+B0010000000000XX /* FeatureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0010000000000XX /* FeatureScreen.swift */; };
+
+# 3. PBXGroup — creates the folder group (path = <Feature>)
+D0010000000000XX /* Feature */ = {
+    isa = PBXGroup;
+    children = (
+        A0010000000000XX /* FeatureScreen.swift */,
+    );
+    path = Feature;
+    sourceTree = "<group>";
+};
+```
+
+Also add the group ref to the `iosApp` parent group's `children` list, and add the build file ref to the `PBXSourcesBuildPhase` files list.
+
+Use the next available hex IDs sequentially after the last ones already in the file:
+- File refs: `A001000000000001`, `A001000000000002`, … (currently up to `A001000000000011`)
+- Build files: `B001000000000001`, `B001000000000002`, … (currently up to `B00100000000000F`)
+- Groups: `D001000000000001`, `D001000000000002`, … (currently up to `D001000000000008`)
+
+If the screen appears as a tab, add it to `ContentView.swift` with an SF Symbols icon:
+```swift
+FeatureScreen()
+    .tabItem { Label("Nome", systemImage: "symbol.name") }
+```
+
+---
+
 ## Naming Conventions
 
 | Layer | Kotlin | Swift |

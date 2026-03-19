@@ -5,20 +5,25 @@ import com.tembt.data.remote.dto.CheckinsResponse
 import com.tembt.data.remote.dto.CourtResponse
 import com.tembt.data.remote.dto.PlayerResponse
 import com.tembt.data.remote.dto.RegisterPlayerRequest
+import com.tembt.data.remote.dto.TournamentDto
 import com.tembt.data.remote.dto.UpdateLocationRequest
 import com.tembt.data.remote.dto.WindowResponse
+import com.tembt.data.remote.dto.toDomain
 import com.tembt.domain.model.MapCoordinates
 import com.tembt.domain.model.Player
 import com.tembt.domain.model.ScheduleWindow
 import com.tembt.domain.model.SlotPlayer
+import com.tembt.domain.model.Tournament
 import com.tembt.domain.model.WindowSlot
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.datetime.LocalDate
 
 class TembtApiService(private val client: HttpClient) {
 
@@ -76,5 +81,17 @@ class TembtApiService(private val client: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(CheckinRequest(uuid = playerUuid, timeSlot = slotTime))
         }
+    }
+
+    suspend fun getTournaments(
+        city: String,
+        from: LocalDate,
+        until: LocalDate
+    ): Result<List<Tournament>> = runCatching {
+        client.get("$BASE_URL/tournaments") {
+            parameter("city", city)
+            parameter("from", from.toString())
+            parameter("until", until.toString())
+        }.body<List<TournamentDto>>().map { it.toDomain() }
     }
 }

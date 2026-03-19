@@ -6,7 +6,15 @@
       "Read(//Users/fernandacarvalho/.claude/**)",
       "Bash(./gradlew :androidApp:assembleDebug)",
       "Bash(./gradlew :shared:assembleSharedDebugXCFramework :androidApp:assembleDebug)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "WebFetch(domain:www.tenisintegrado.com.br)",
+      "WebSearch",
+      "WebFetch(domain:embed.letzplay.me)",
+      "WebFetch(domain:circuitobt.com)",
+      "WebFetch(domain:letzplay.me)",
+      "WebFetch(domain:cbbtennis.com.br)",
+      "WebFetch(domain:torneioja.com.br)",
+      "WebFetch(domain:cbt-tenis.com.br)"
     ],
     "additionalDirectories": [
       "/Users/fernandacarvalho/.claude"

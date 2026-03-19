@@ -20,6 +20,8 @@
 		B00100000000000C /* ScheduleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000E /* ScheduleScreen.swift */; };
 		B00100000000000D /* ScheduleViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000F /* ScheduleViewModelHost.swift */; };
 		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
+		B00100000000000F /* TournamentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000011 /* TournamentScreen.swift */; };
+		B001000000000010 /* TournamentViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000012 /* TournamentViewModelHost.swift */; };
 		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -40,6 +42,8 @@
 		A00100000000000E /* ScheduleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleScreen.swift; sourceTree = "<group>"; };
 		A00100000000000F /* ScheduleViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModelHost.swift; sourceTree = "<group>"; };
 		A001000000000010 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		A001000000000011 /* TournamentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentScreen.swift; sourceTree = "<group>"; };
+		A001000000000012 /* TournamentViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentViewModelHost.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +119,15 @@
 			path = Schedule;
 			sourceTree = "<group>";
 		};
+		D001000000000008 /* Tournament */ = {
+			isa = PBXGroup;
+			children = (
+				A001000000000011 /* TournamentScreen.swift */,
+				A001000000000012 /* TournamentViewModelHost.swift */,
+			);
+			path = Tournament;
+			sourceTree = "<group>";
+		};
 		D001000000000005 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +139,7 @@
 				D001000000000004 /* Permission */,
 				D001000000000006 /* Welcome */,
 				D001000000000007 /* Schedule */,
+				D001000000000008 /* Tournament */,
 				A001000000000007 /* Assets.xcassets */,
 				A001000000000009 /* Info.plist */,
 			);
@@ -235,6 +249,8 @@
 				B00100000000000C /* ScheduleScreen.swift in Sources */,
 				B00100000000000D /* ScheduleViewModelHost.swift in Sources */,
 				B00100000000000E /* AppTheme.swift in Sources */,
+				B00100000000000F /* TournamentScreen.swift in Sources */,
+				B001000000000010 /* TournamentViewModelHost.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

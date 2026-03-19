@@ -5,12 +5,15 @@ import com.tembt.data.remote.createHttpClient
 import com.tembt.data.repository.CourtRepositoryImpl
 import com.tembt.data.repository.PlayerRepositoryImpl
 import com.tembt.data.repository.PlayersRepositoryImpl
+import com.tembt.data.repository.TournamentRepositoryImpl
 import com.tembt.data.repository.WindowRepositoryImpl
 import com.tembt.domain.repository.CourtRepository
 import com.tembt.domain.repository.PlayerRepository
 import com.tembt.domain.repository.PlayersRepository
+import com.tembt.domain.repository.TournamentRepository
 import com.tembt.domain.repository.WindowRepository
 import com.tembt.domain.usecase.CalculateDistanceUseCase
+import com.tembt.domain.usecase.GetTournamentsUseCase
 import com.tembt.domain.usecase.CheckinUseCase
 import com.tembt.domain.usecase.GetCourtLocationUseCase
 import com.tembt.domain.usecase.GetLocationUpdateIntervalUseCase
@@ -24,6 +27,7 @@ import com.tembt.domain.usecase.SendLocationUseCase
 import com.tembt.presentation.app.AppViewModel
 import com.tembt.presentation.map.MapViewModel
 import com.tembt.presentation.schedule.ScheduleViewModel
+import com.tembt.presentation.tournament.TournamentViewModel
 import com.tembt.presentation.welcome.WelcomeViewModel
 import org.koin.dsl.module
 
@@ -39,6 +43,7 @@ val appModule = module {
     single<CourtRepository> { CourtRepositoryImpl(get()) }
     single<PlayersRepository> { PlayersRepositoryImpl(get()) }
     single<WindowRepository> { WindowRepositoryImpl(get()) }
+    single<TournamentRepository> { TournamentRepositoryImpl(get()) }
 
     // Use cases — factory {} because they are stateless and cheap to recreate
     factory { RegisterPlayerUseCase(get(), get()) }
@@ -50,6 +55,7 @@ val appModule = module {
     factory { CalculateDistanceUseCase() }
     factory { GetLocationUpdateIntervalUseCase() }
     factory { IsCourtOpenUseCase() }
+    factory { GetTournamentsUseCase(get()) }
     factory {
         LocationMonitoringCoordinator(
             isCourtOpen          = get(),
@@ -70,4 +76,5 @@ val appModule = module {
     factory { WelcomeViewModel(get()) }
     factory { AppViewModel(get()) }
     factory { ScheduleViewModel(get(), get(), get()) }
+    factory { TournamentViewModel(get()) }
 }

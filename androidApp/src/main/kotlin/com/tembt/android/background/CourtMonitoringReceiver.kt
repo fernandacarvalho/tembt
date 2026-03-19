@@ -11,7 +11,8 @@ import com.tembt.platform.CourtScheduleStorage
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.koin.android.ext.android.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Receives three broadcasts:
@@ -21,7 +22,7 @@ import org.koin.android.ext.android.inject
  * 3. [ACTION_PAUSE_MONITORING]       — user tapped "Não monitorar hoje" in the notification
  *                                       → mark today as paused and stop the service.
  */
-class CourtMonitoringReceiver : BroadcastReceiver() {
+class CourtMonitoringReceiver : BroadcastReceiver(), KoinComponent {
 
     private val scheduleStorage: CourtScheduleStorage by inject()
     private val scheduler: CourtMonitoringScheduler by inject()

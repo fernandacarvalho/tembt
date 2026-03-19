@@ -18,11 +18,15 @@ private struct MainTabs: View {
         TabView {
             MapScreen()
                 .tabItem {
-                    Label("Mapa", systemImage: "map.fill")
+                    Label("Quadra", systemImage: "map.fill")
                 }
             ScheduleScreen()
                 .tabItem {
-                    Label("Agenda", systemImage: "calendar")
+                    Label("Lista", systemImage: "list.bullet")
+                }
+            TournamentScreen()
+                .tabItem {
+                    Label("Torneios", systemImage: "trophy.fill")
                 }
         }
     }

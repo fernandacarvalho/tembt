@@ -14,16 +14,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.Point
+import org.maplibre.geojson.Feature
+import org.maplibre.geojson.FeatureCollection
+import org.maplibre.geojson.Point
 import com.tembt.domain.model.MapCoordinates
 import com.tembt.domain.model.Player
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.geometry.LatLngBounds
-import org.maplibre.android.maps.MapboxMap
+import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.style.expressions.Expression.has
 import org.maplibre.android.style.expressions.Expression.get
@@ -51,7 +51,7 @@ import org.maplibre.android.style.layers.PropertyFactory.textSize
 import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.GeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource
-import com.mapbox.geojson.Polygon
+import org.maplibre.geojson.Polygon
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -75,7 +75,7 @@ private const val KM_AS_LAT_DEG = 0.009
 @Composable
 fun MapLibreView(center: MapCoordinates, players: List<Player>, recenterTrigger: Int = 0) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val mapRef = remember { mutableStateOf<MapboxMap?>(null) }
+    val mapRef = remember { mutableStateOf<MapLibreMap?>(null) }
 
     val latLng = remember(center) { LatLng(center.latitude, center.longitude) }
 
