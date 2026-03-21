@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tembt.shared.generated.resources.HelveticaNeue
+import com.tembt.shared.generated.resources.HelveticaNeueCondensedBlack
 import com.tembt.shared.generated.resources.Res
 import com.tembt.ui.theme.Amaranth
 import com.tembt.ui.theme.AlabasterGrey
@@ -40,7 +40,7 @@ fun TembtButton(
     enabled: Boolean = true,
     isLoading: Boolean = false,
 ) {
-    val fontFamily = FontFamily(Font(Res.font.HelveticaNeue, weight = FontWeight.Black))
+    val fontFamily = FontFamily(Font(Res.font.HelveticaNeueCondensedBlack, weight = FontWeight.Black))
 
     val containerColor = when (style) {
         TembtButtonStyle.Stroke        -> Color.Transparent
@@ -52,14 +52,19 @@ fun TembtButton(
         TembtButtonStyle.SolidPrimary  -> AlabasterGrey
         TembtButtonStyle.SolidInverted -> Amaranth
     }
+    val isEnabled = enabled && !isLoading
     val borderColor = when (style) {
-        TembtButtonStyle.Stroke -> AlabasterGrey
+        TembtButtonStyle.Stroke -> if (isEnabled) AlabasterGrey else AlabasterGrey.copy(alpha = 0.4f)
         else                    -> Color.Transparent
+    }
+    val disabledContainerColor = when (style) {
+        TembtButtonStyle.Stroke -> Color.Transparent
+        else                    -> containerColor.copy(alpha = 0.4f)
     }
 
     OutlinedButton(
         onClick = onClick,
-        enabled = enabled && !isLoading,
+        enabled = isEnabled,
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp),
@@ -68,7 +73,7 @@ fun TembtButton(
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = containerColor,
             contentColor = contentColor,
-            disabledContainerColor = containerColor.copy(alpha = 0.4f),
+            disabledContainerColor = disabledContainerColor,
             disabledContentColor = contentColor.copy(alpha = 0.4f),
         )
     ) {
