@@ -1,0 +1,24 @@
+# Build outputs
+build/
+*/build/
+.gradle/
+.kotlin/
+
+# XCFrameworks and iOS binaries
+*.xcframework/
+*.framework/
+
+# Gradle wrapper jar
+gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Android local config
+local.properties
+
+# Xcode user data
+*.xcuserstate
+xcuserdata/
