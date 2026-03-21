@@ -35,5 +35,7 @@
     <string>Este app precisa da sua localização para mostrar o mapa e os pontos de interesse próximos a você.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Este app precisa da sua localização para mostrar o mapa e os pontos de interesse próximos a você.</string>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
 </dict>
 </plist>

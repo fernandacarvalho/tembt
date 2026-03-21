@@ -1,4 +1,4 @@
-package com.tembt.android.ui.tournament
+package com.tembt.ui.tournament
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

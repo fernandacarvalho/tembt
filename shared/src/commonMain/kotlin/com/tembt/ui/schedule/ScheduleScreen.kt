@@ -1,4 +1,4 @@
-package com.tembt.android.ui.schedule
+package com.tembt.ui.schedule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,10 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -39,25 +36,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tembt.domain.model.ScheduleWindow
 import com.tembt.domain.model.SlotPlayer
 import com.tembt.domain.model.WindowSlot
 import com.tembt.presentation.schedule.ScheduleUiState
-import com.tembt.android.ui.theme.AlabasterGrey
-import com.tembt.android.ui.theme.ApricotCream
-import com.tembt.android.ui.theme.DuskBlue
-import com.tembt.android.ui.theme.PumpkinSpice
-import com.tembt.android.ui.theme.TembtBlack
-import com.tembt.android.ui.theme.TembtWhite
 import com.tembt.presentation.schedule.ScheduleViewModel
-import org.koin.androidx.compose.koinViewModel
+import com.tembt.ui.theme.AlabasterGrey
+import com.tembt.ui.theme.Amaranth
+import com.tembt.ui.theme.DeepMocha
+import com.tembt.ui.theme.PitchBlack
+import com.tembt.ui.theme.TembtWhite
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 
 private val BgLight       = AlabasterGrey
 private val CardWhite     = TembtWhite
-private val OrangeAccent  = PumpkinSpice
-private val TextPrimary   = TembtBlack
-private val TextSecondary = DuskBlue
+private val OrangeAccent  = Amaranth
+private val TextPrimary   = PitchBlack
+private val TextSecondary = DeepMocha
 private val AvatarColors = listOf(
     Color(0xFF8B5E3C),
     Color(0xFF3A7BD5),
@@ -129,11 +125,7 @@ private fun PollContent(
                 derivedStateOf { checkedInSlotTime == slot.time }
             }
             val onTap = remember(slot.time, onCheckin) { { onCheckin(slot.time) } }
-            PollSlotItem(
-                slot = slot,
-                isCheckedIn = isCheckedIn,
-                onTap = onTap
-            )
+            PollSlotItem(slot = slot, isCheckedIn = isCheckedIn, onTap = onTap)
         }
     }
 }
@@ -153,26 +145,11 @@ private fun PollHeader(window: ScheduleWindow) {
     )
     Spacer(Modifier.height(6.dp))
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = Icons.Default.Check,
-            contentDescription = null,
-            tint = TextSecondary,
-            modifier = Modifier.size(16.dp)
-        )
-        Icon(
-            imageVector = Icons.Default.Check,
-            contentDescription = null,
-            tint = TextSecondary,
-            modifier = Modifier
-                .size(16.dp)
-                .offset(x = (-5).dp)
-        )
+        // Double checkmark using text characters
+        Text("✓", color = TextSecondary, fontSize = 12.sp, fontWeight = FontWeight.Medium, modifier = Modifier.size(16.dp))
+        Text("✓", color = TextSecondary, fontSize = 12.sp, fontWeight = FontWeight.Medium, modifier = Modifier.size(16.dp).offset(x = (-5).dp))
         Spacer(Modifier.width(4.dp))
-        Text(
-            text = "Selecione uma ou mais opções",
-            color = TextSecondary,
-            fontSize = 14.sp
-        )
+        Text("Selecione uma ou mais opções", color = TextSecondary, fontSize = 14.sp)
     }
 }
 
@@ -192,9 +169,7 @@ private fun PollSlotItem(
             .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
         CheckCircle(isChecked = isCheckedIn)
-
         Spacer(Modifier.width(14.dp))
-
         Text(
             text = slot.time,
             color = TextPrimary,
@@ -202,7 +177,6 @@ private fun PollSlotItem(
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.weight(1f)
         )
-
         if (slot.players.isNotEmpty()) {
             PlayerAvatarsWithCount(players = slot.players)
         }
@@ -224,12 +198,7 @@ private fun CheckCircle(isChecked: Boolean) {
         contentAlignment = Alignment.Center
     ) {
         if (isChecked) {
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = "Confirmado",
-                tint = Color.White,
-                modifier = Modifier.size(16.dp)
-            )
+            Text("✓", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -262,16 +231,10 @@ private fun PlayerAvatarsWithCount(players: List<SlotPlayer>) {
             }
         }
         Spacer(Modifier.width(6.dp))
-        Text(
-            text = players.size.toString(),
-            color = TextSecondary,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
-        )
+        Text(text = players.size.toString(), color = TextSecondary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
-/** Formats ISO date "2026-03-14" → "14/3" */
 private fun formatPollDate(date: String): String {
     return try {
         val parts = date.split("-")
@@ -280,7 +243,6 @@ private fun formatPollDate(date: String): String {
         val day = parts[2].trimStart('0')
         "$day/$month"
     } catch (e: Exception) {
-        e.printStackTrace()
         date
     }
 }

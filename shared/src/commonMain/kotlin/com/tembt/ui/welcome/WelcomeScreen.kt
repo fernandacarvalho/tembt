@@ -1,6 +1,6 @@
-package com.tembt.android.ui.welcome
+package com.tembt.ui.welcome
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,14 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,20 +24,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tembt.presentation.welcome.WelcomeUiEvent
 import com.tembt.presentation.welcome.WelcomeUiState
 import com.tembt.presentation.welcome.WelcomeViewModel
-import org.koin.androidx.compose.koinViewModel
+import com.tembt.shared.generated.resources.Res
+import com.tembt.shared.generated.resources.welcome_player
+import com.tembt.ui.components.TembtButton
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+
+private val ColorDeepMocha  = Color(0xFF433633)
+private val ColorPitchBlack = Color(0xFF141204)
 
 @Composable
 fun WelcomeScreen(
@@ -53,62 +63,65 @@ fun WelcomeScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(Res.drawable.welcome_player),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
+                .padding(horizontal = 32.dp)
         ) {
-            // Logo
+            Spacer(Modifier.height(24.dp))
+
             Text(
                 text = "TEMBT",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
+                fontSize = 64.sp,
+                fontWeight = FontWeight.Black,
+                fontStyle = FontStyle.Italic,
+                color = Color.White,
+                lineHeight = 64.sp
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
 
             Text(
-                text = "Beach Tennis",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "Para iniciar, insira seu nome",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.White.copy(alpha = 0.85f),
+                lineHeight = 26.sp
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Text(
-                text = "Como você quer ser chamado?",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Digite seu nome para entrar no app.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Seu nome") },
+                placeholder = {
+                    Text("Seu nome", color = ColorDeepMocha.copy(alpha = 0.45f))
+                },
                 singleLine = true,
                 enabled = uiState !is WelcomeUiState.Loading,
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White.copy(alpha = 0.8f),
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    errorBorderColor = Color.Transparent,
+                    focusedTextColor = ColorPitchBlack,
+                    unfocusedTextColor = ColorPitchBlack,
+                ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     imeAction = ImeAction.Done
@@ -123,34 +136,27 @@ fun WelcomeScreen(
             )
 
             if (uiState is WelcomeUiState.Error) {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(Modifier.height(6.dp))
                 Text(
                     text = (uiState as WelcomeUiState.Error).message,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Color.White,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.weight(1f))
 
-            Button(
+            TembtButton(
+                title = "COMEÇAR A USAR",
                 onClick = {
                     focusManager.clearFocus()
                     viewModel.onStartClicked(name)
                 },
-                enabled = name.isNotBlank() && uiState !is WelcomeUiState.Loading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                if (uiState is WelcomeUiState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                } else {
-                    Text("Começar")
-                }
-            }
+                enabled = name.isNotBlank(),
+                isLoading = uiState is WelcomeUiState.Loading
+            )
+
+            Spacer(Modifier.height(32.dp))
         }
     }
 }

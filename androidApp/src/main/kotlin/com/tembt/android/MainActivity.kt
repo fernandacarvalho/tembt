@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.tembt.android.ui.RootScreen
-import com.tembt.android.ui.theme.TembtTheme
+import com.tembt.ui.theme.TembtTheme
 
 class MainActivity : ComponentActivity() {
 

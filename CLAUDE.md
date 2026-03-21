@@ -9,17 +9,47 @@ Mobile app for iOS and Android built with Kotlin Multiplatform (KMP).
 ```
 tembt/
 ├── shared/                         # KMP shared module
-│   ├── commonMain/                 # 100% shared code (business logic, domain, data)
-│   ├── androidMain/                # Android-specific implementations
-│   └── iosMain/                    # iOS-specific implementations
-├── androidApp/                     # Android UI layer (Jetpack Compose)
-└── iosApp/                         # iOS UI layer (SwiftUI)
+│   ├── commonMain/                 # Business logic + shared UI (Compose Multiplatform)
+│   │   └── kotlin/com/tembt/
+│   │       ├── domain/             # Entities, UseCases, Repository interfaces
+│   │       ├── data/               # Repository implementations, DTOs, API
+│   │       ├── presentation/       # ViewModels, UiState, UiEvent
+│   │       └── ui/                 # Shared Compose screens & theme
+│   ├── androidMain/                # Android-specific implementations (expect/actual)
+│   └── iosMain/                    # iOS-specific implementations + ComposeUIViewController wrappers
+├── androidApp/                     # Android entry point + platform-specific screens (map)
+└── iosApp/                         # iOS entry point + platform-specific screens (map)
 ```
 
-**Rule:** Code lives in `commonMain` by default. Move to platform-specific source sets only when:
-- A platform API has no KMP equivalent (e.g., MapKit, APNs)
+**Rule:** Code lives in `commonMain` by default — including UI screens. Move to platform-specific source sets only when:
+- A platform API has no KMP equivalent (e.g., MapKit, APNs, CLLocationManager)
+- A third-party SDK is platform-only (e.g., MapLibre for Android)
 - Performance or UX requires native implementation
-- Third-party SDK is platform-only
+
+### Compose Multiplatform (CMP) — shared UI
+
+The `shared` module uses **Compose Multiplatform** (`org.jetbrains.compose` plugin). All screens except the map are written once in `shared/commonMain/kotlin/com/tembt/ui/` and rendered on both platforms.
+
+**Android** uses the shared Composables directly (they are Jetpack Compose-compatible).
+
+**iOS** uses `ComposeUIViewController` wrappers defined in `shared/src/iosMain/kotlin/com/tembt/ui/ViewControllers.kt`. Each function returns a `UIViewController` that SwiftUI hosts via `ComposeHostingView` (`UIViewControllerRepresentable`).
+
+```
+// iosMain — one function per shared screen
+fun welcomeViewController(onRegistered: () -> Unit): UIViewController =
+    ComposeUIViewController { TembtTheme { WelcomeScreen(onRegistered = onRegistered) } }
+```
+
+```swift
+// SwiftUI — thin wrapper
+ComposeHostingView { ViewControllersKt.welcomeViewController(onRegistered: { ... }) }
+```
+
+**Platform-specific screens (map only):**
+- `androidApp/ui/map/` — MapLibre + Android permission APIs
+- `iosApp/Map/` — MapKit + CoreLocation
+
+**Theme:** `com.tembt.ui.theme.TembtTheme` / `com.tembt.ui.theme.*` — defined once in `shared/commonMain`. `androidApp/ui/theme/Theme.kt` re-exports from there for backward compatibility.
 
 ---
 
@@ -195,58 +225,75 @@ Only proceed with a platform-specific screen after the user explicitly confirms.
 > I recommend making this screen platform-specific because [specific justification].
 > Should I proceed with separate implementations for Android and iOS, or would you prefer to keep it shared and accept the trade-off?"
 
-For all other screens, implement UI in both `androidApp` and `iosApp` consuming the same shared ViewModel without asking.
+For all other screens, implement a **single shared Compose screen** in `shared/commonMain/kotlin/com/tembt/ui/<feature>/` following the steps in [Adding a New Screen](#adding-a-new-screen).
 
 ---
 
 ## Adding a New Screen
 
-Every new screen requires changes in three places. Follow these steps in order.
+> **STOP — read before creating any file.**
+> New screens are **never** created in `androidApp/` or `iosApp/` (except the map).
+> They are written once in `shared/commonMain` and automatically run on both platforms.
 
-### 1. Android — create the Composable
+Every new screen requires changes in **four** places. Follow these steps in order.
 
-Create `androidApp/src/main/kotlin/com/tembt/android/ui/<feature>/<Feature>Screen.kt`.
+### 1. Shared — create the Composable
 
-If the screen needs to appear as a tab, register it in `RootScreen.kt`:
-- Add a `NavigationBarItem` with a Material icon from `Icons.Default.*` or `Icons.AutoMirrored.Filled.*`
-- Add the screen to the `when (selectedTab)` block
+Create `shared/src/commonMain/kotlin/com/tembt/ui/<feature>/<Feature>Screen.kt`.
 
-### 2. iOS — create the SwiftUI view
+```kotlin
+package com.tembt.ui.<feature>
 
-Create `iosApp/iosApp/<Feature>/<Feature>Screen.swift`.
-
-**Then register the file in `iosApp/iosApp.xcodeproj/project.pbxproj`** — Xcode does not pick up new files automatically when they are written from outside the IDE. Three sections must be updated:
-
-```
-# 1. PBXFileReference — declares the file
-A0010000000000XX /* FeatureScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureScreen.swift; sourceTree = "<group>"; };
-
-# 2. PBXBuildFile — adds it to compilation
-B0010000000000XX /* FeatureScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0010000000000XX /* FeatureScreen.swift */; };
-
-# 3. PBXGroup — creates the folder group (path = <Feature>)
-D0010000000000XX /* Feature */ = {
-    isa = PBXGroup;
-    children = (
-        A0010000000000XX /* FeatureScreen.swift */,
-    );
-    path = Feature;
-    sourceTree = "<group>";
-};
+@Composable
+fun FeatureScreen(viewModel: FeatureViewModel = koinViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // ...
+}
 ```
 
-Also add the group ref to the `iosApp` parent group's `children` list, and add the build file ref to the `PBXSourcesBuildPhase` files list.
+Use `org.koin.compose.viewmodel.koinViewModel` (not the androidx version).
+Use `androidx.lifecycle.compose.collectAsStateWithLifecycle` (JetBrains KMP version — same package name).
 
-Use the next available hex IDs sequentially after the last ones already in the file:
-- File refs: `A001000000000001`, `A001000000000002`, … (currently up to `A001000000000011`)
-- Build files: `B001000000000001`, `B001000000000002`, … (currently up to `B00100000000000F`)
-- Groups: `D001000000000001`, `D001000000000002`, … (currently up to `D001000000000008`)
+### 2. iosMain — add a ComposeUIViewController wrapper
 
-If the screen appears as a tab, add it to `ContentView.swift` with an SF Symbols icon:
+Add a new function to `shared/src/iosMain/kotlin/com/tembt/ui/ViewControllers.kt`:
+
+```kotlin
+fun featureViewController(): UIViewController =
+    ComposeUIViewController { TembtTheme { FeatureScreen() } }
+```
+
+If the screen needs a callback (e.g., navigation), pass it as a lambda parameter.
+
+### 3. Android — wire into RootScreen
+
+If the screen appears as a tab, update `androidApp/src/main/kotlin/com/tembt/android/ui/RootScreen.kt`:
+- Add a `NavigationBarItem` with an icon from `Icons.Default.*` or `Icons.AutoMirrored.Filled.*`
+- Add the screen to the `when (selectedTab)` block (import from `com.tembt.ui.<feature>`)
+
+### 4. iOS — wire into ContentView + register in pbxproj
+
+**4a.** Add the tab to `iosApp/iosApp/ContentView.swift`:
 ```swift
-FeatureScreen()
+ComposeHostingView { ViewControllersKt.featureViewController() }
     .tabItem { Label("Nome", systemImage: "symbol.name") }
 ```
+
+**4b.** Register `ComposeHostingView.swift` is already in the project. No new Swift files are needed for shared screens. Only register new Swift files if you are adding iOS-specific helpers (which should be rare).
+
+If you do need to register a new Swift file in `project.pbxproj`, three sections must be updated (Xcode does not pick up files written from outside the IDE):
+
+```
+# 1. PBXFileReference
+A0010000000000XX /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+
+# 2. PBXBuildFile
+B0010000000000XX /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0010000000000XX; };
+
+# 3. Add to PBXGroup children and PBXSourcesBuildPhase files
+```
+
+Use the next sequential hex IDs after the last ones in the file.
 
 ---
 
@@ -380,3 +427,6 @@ Examples:
 - Do not collect flows without cancellation; always tie collection to a lifecycle or scope
 - Do not add platform-specific code to `commonMain` — use `expect/actual`
 - Do not create god-objects or mega-ViewModels covering multiple unrelated features
+- **Do not create screen files in `androidApp/ui/` or `iosApp/` — all screens go in `shared/commonMain/kotlin/com/tembt/ui/`** (map is the only exception)
+- Do not use `org.koin.androidx.compose.koinViewModel` in shared screens — use `org.koin.compose.viewmodel.koinViewModel`
+- Do not write a SwiftUI screen or ViewModelHost for a screen that exists in shared — use `ComposeHostingView` instead

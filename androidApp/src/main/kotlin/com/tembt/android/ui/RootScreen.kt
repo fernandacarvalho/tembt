@@ -16,9 +16,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tembt.android.ui.map.MapScreen
-import com.tembt.android.ui.schedule.ScheduleScreen
-import com.tembt.android.ui.tournament.TournamentScreen
-import com.tembt.android.ui.welcome.WelcomeScreen
+import com.tembt.ui.schedule.ScheduleScreen
+import com.tembt.ui.tournament.TournamentScreen
+import com.tembt.ui.welcome.WelcomeScreen
 import com.tembt.presentation.app.AppViewModel
 import org.koin.androidx.compose.koinViewModel
 

@@ -14,15 +14,10 @@
 		B001000000000005 /* MapViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000005 /* MapViewModelHost.swift */; };
 		B001000000000006 /* PermissionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000006 /* PermissionScreen.swift */; };
 		B001000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000007 /* Assets.xcassets */; };
-		B001000000000009 /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000B /* WelcomeScreen.swift */; };
-		B00100000000000A /* WelcomeViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000C /* WelcomeViewModelHost.swift */; };
 		B00100000000000B /* AppViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000D /* AppViewModelHost.swift */; };
-		B00100000000000C /* ScheduleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000E /* ScheduleScreen.swift */; };
-		B00100000000000D /* ScheduleViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000F /* ScheduleViewModelHost.swift */; };
 		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
-		B00100000000000F /* TournamentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000011 /* TournamentScreen.swift */; };
-		B001000000000010 /* TournamentViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000012 /* TournamentViewModelHost.swift */; };
 		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B001000000000011 /* ComposeHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000013 /* ComposeHostingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,14 +31,9 @@
 		A001000000000008 /* shared.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = shared.xcframework; path = ../shared/build/XCFrameworks/debug/shared.xcframework; sourceTree = "<group>"; };
 		A001000000000009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A00100000000000A /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A00100000000000B /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
-		A00100000000000C /* WelcomeViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModelHost.swift; sourceTree = "<group>"; };
 		A00100000000000D /* AppViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModelHost.swift; sourceTree = "<group>"; };
-		A00100000000000E /* ScheduleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleScreen.swift; sourceTree = "<group>"; };
-		A00100000000000F /* ScheduleViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModelHost.swift; sourceTree = "<group>"; };
 		A001000000000010 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
-		A001000000000011 /* TournamentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentScreen.swift; sourceTree = "<group>"; };
-		A001000000000012 /* TournamentViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentViewModelHost.swift; sourceTree = "<group>"; };
+		A001000000000013 /* ComposeHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposeHostingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,31 +91,12 @@
 			path = Permission;
 			sourceTree = "<group>";
 		};
-		D001000000000006 /* Welcome */ = {
+		D001000000000009 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				A00100000000000B /* WelcomeScreen.swift */,
-				A00100000000000C /* WelcomeViewModelHost.swift */,
+				A001000000000013 /* ComposeHostingView.swift */,
 			);
-			path = Welcome;
-			sourceTree = "<group>";
-		};
-		D001000000000007 /* Schedule */ = {
-			isa = PBXGroup;
-			children = (
-				A00100000000000E /* ScheduleScreen.swift */,
-				A00100000000000F /* ScheduleViewModelHost.swift */,
-			);
-			path = Schedule;
-			sourceTree = "<group>";
-		};
-		D001000000000008 /* Tournament */ = {
-			isa = PBXGroup;
-			children = (
-				A001000000000011 /* TournamentScreen.swift */,
-				A001000000000012 /* TournamentViewModelHost.swift */,
-			);
-			path = Tournament;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		D001000000000005 /* iosApp */ = {
@@ -137,9 +108,7 @@
 				A001000000000010 /* AppTheme.swift */,
 				D001000000000003 /* Map */,
 				D001000000000004 /* Permission */,
-				D001000000000006 /* Welcome */,
-				D001000000000007 /* Schedule */,
-				D001000000000008 /* Tournament */,
+				D001000000000009 /* Shared */,
 				A001000000000007 /* Assets.xcassets */,
 				A001000000000009 /* Info.plist */,
 			);
@@ -154,6 +123,7 @@
 			buildConfigurationList = F001000000000002 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
 				E001000000000010 /* Run Gradle Build Script */,
+				E001000000000011 /* Copy Compose Resources */,
 				E001000000000002 /* Sources */,
 				E001000000000003 /* Resources */,
 				C001000000000001 /* Frameworks */,
@@ -230,6 +200,24 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/..\"\nif [ \"$CONFIGURATION\" == \"Release\" ]; then\n  ./gradlew :shared:assembleSharedReleaseXCFramework\nelse\n  ./gradlew :shared:assembleSharedDebugXCFramework\nfi\n";
 		};
+		E001000000000011 /* Copy Compose Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Compose Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SOURCE=\"$SRCROOT/../shared/build/generated/compose/resourceGenerator/preparedResources/commonMain/composeResources\"\nDEST=\"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/compose-resources/composeResources/com.tembt.shared.generated.resources\"\nif [ -d \"$SOURCE\" ]; then\n  mkdir -p \"$DEST\"\n  cp -r \"$SOURCE/\" \"$DEST/\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -243,14 +231,9 @@
 				B001000000000004 /* MapViewRepresentable.swift in Sources */,
 				B001000000000005 /* MapViewModelHost.swift in Sources */,
 				B001000000000006 /* PermissionScreen.swift in Sources */,
-				B001000000000009 /* WelcomeScreen.swift in Sources */,
-				B00100000000000A /* WelcomeViewModelHost.swift in Sources */,
 				B00100000000000B /* AppViewModelHost.swift in Sources */,
-				B00100000000000C /* ScheduleScreen.swift in Sources */,
-				B00100000000000D /* ScheduleViewModelHost.swift in Sources */,
 				B00100000000000E /* AppTheme.swift in Sources */,
-				B00100000000000F /* TournamentScreen.swift in Sources */,
-				B001000000000010 /* TournamentViewModelHost.swift in Sources */,
+				B001000000000011 /* ComposeHostingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
