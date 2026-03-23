@@ -12,6 +12,7 @@ final class MapViewModelHost: ObservableObject {
         isPermissionRequired: false,
         isDenied: false,
         center: nil,
+        courtName: "",
         error: nil,
         players: []
     )

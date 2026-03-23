@@ -9,14 +9,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -40,6 +46,10 @@ import com.tembt.android.ui.permission.PermissionScreen
 import com.tembt.presentation.map.MapUiEvent
 import com.tembt.presentation.map.MapUiState
 import com.tembt.presentation.map.MapViewModel
+import com.tembt.ui.theme.AlabasterGrey
+import com.tembt.ui.theme.DeepMocha
+import com.tembt.ui.theme.PitchBlack
+import com.tembt.ui.theme.SpicyPaprika
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -81,7 +91,7 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
     when (val state = uiState) {
         is MapUiState.Loading -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = SpicyPaprika)
             }
         }
 
@@ -105,37 +115,58 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
             Box(Modifier.fillMaxSize()) {
                 MapLibreView(center = state.center, players = state.players, recenterTrigger = recenterTrigger)
 
+                // ── Info card ─────────────────────────────────────────────
                 Card(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 16.dp, top = 56.dp),
+                        .padding(start = 16.dp, end = 16.dp, top = 56.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(50),
+                    colors = CardDefaults.cardColors(containerColor = AlabasterGrey),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    androidx.compose.foundation.layout.Row(
+                    Row(
+                        modifier = Modifier.padding(start = 14.dp, top = 10.dp, bottom = 10.dp, end = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "${state.players.size} jogadores no local",
-                            modifier = Modifier.padding(start = 12.dp, top = 6.dp, bottom = 6.dp),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        IconButton(
-                            onClick = { viewModel.refreshPlayers() },
-                            modifier = Modifier.padding(end = 4.dp)
-                        ) {
-                            Text("↻", style = MaterialTheme.typography.titleMedium)
+                        Column(modifier = Modifier.weight(1f)) {
+                            if (state.courtName.isNotEmpty()) {
+                                Text(
+                                    text = state.courtName,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = PitchBlack
+                                )
+                            }
+                            Text(
+                                text = "${state.players.size} jogadores no local agora",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = PitchBlack
+                            )
+                        }
+                        IconButton(onClick = { viewModel.refreshPlayers() }) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                                tint = SpicyPaprika
+                            )
                         }
                     }
                 }
 
-FloatingActionButton(
+                // ── Re-center button ──────────────────────────────────────
+                FloatingActionButton(
                     onClick = { recenterTrigger++ },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(end = 16.dp, bottom = 32.dp),
-                    shape = CircleShape
+                        .padding(end = 16.dp, bottom = 120.dp),
+                    shape = CircleShape,
+                    containerColor = AlabasterGrey,
+                    contentColor = DeepMocha
                 ) {
-                    Text("⊕", fontWeight = FontWeight.Bold)
+                    Icon(
+                        imageVector = Icons.Default.NearMe,
+                        contentDescription = null
+                    )
                 }
             }
         }

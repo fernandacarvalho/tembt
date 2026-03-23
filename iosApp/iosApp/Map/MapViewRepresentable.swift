@@ -91,8 +91,8 @@ struct MapViewRepresentable: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let circle = overlay as? MKCircle {
                 let renderer = MKCircleRenderer(circle: circle)
-                renderer.fillColor = UIColor.systemOrange.withAlphaComponent(0.12)
-                renderer.strokeColor = UIColor.systemOrange.withAlphaComponent(0.55)
+                renderer.fillColor = UIColor(Color.appSecondary).withAlphaComponent(0.12)
+                renderer.strokeColor = UIColor(Color.appSecondary).withAlphaComponent(0.60)
                 renderer.lineWidth = 1.5
                 return renderer
             }
@@ -124,7 +124,7 @@ struct MapViewRepresentable: UIViewRepresentable {
             view.annotation = annotation
             view.clusteringIdentifier = id
             view.displayPriority = .defaultLow
-            view.markerTintColor = UIColor.systemOrange
+            view.markerTintColor = UIColor(Color.appSecondary)
             view.glyphImage = UIImage(systemName: "figure.tennis.circle.fill")
             view.canShowCallout = false
             return view

@@ -68,7 +68,7 @@ class MapViewModel(
             _uiState.value = MapUiState.Loading
             getCourtLocation().fold(
                 onSuccess = { center ->
-                    _uiState.value = MapUiState.MapReady(center)
+                    _uiState.value = MapUiState.MapReady(center = center, courtName = center.name)
                     // Players fetched sequentially in the same coroutine — guaranteed to run
                     // only after court succeeds, and cancelled together if the scope is cancelled.
                     getPlayersAtCourt().onSuccess { players ->

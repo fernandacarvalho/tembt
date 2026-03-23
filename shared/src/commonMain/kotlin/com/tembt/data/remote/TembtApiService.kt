@@ -40,7 +40,7 @@ class TembtApiService(private val client: HttpClient) {
 
     suspend fun getCourtLocation(): Result<MapCoordinates> = runCatching {
         val response = client.get("$BASE_URL/court").body<CourtResponse>()
-        MapCoordinates(latitude = response.lat, longitude = response.lng)
+        MapCoordinates(latitude = response.lat, longitude = response.lng, name = response.name)
     }
 
     suspend fun getPlayers(): Result<List<Player>> = runCatching {

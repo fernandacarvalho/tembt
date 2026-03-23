@@ -3,22 +3,18 @@ import SwiftUI
 // MARK: - Color palette
 
 extension Color {
-    /// Alabaster Grey — app background
+    /// Alabaster Grey #E7E7E7 — app background, disabled text
     static let appBackground = Color(r: 0xE7, g: 0xE7, b: 0xE7)
     /// White — card / surface
     static let appSurface    = Color.white
-    /// Pumpkin Spice — primary: buttons, checked states, highlighted text
-    static let appPrimary    = Color(r: 0xFC, g: 0x7A, b: 0x1E)
-    /// Molten Orange — secondary accent
-    static let appSecondary  = Color(r: 0xF2, g: 0x4C, b: 0x00)
-    /// Dusk Blue — dark accent, muted text, icons, graphic elements
-    static let appBlue       = Color(r: 0x48, g: 0x56, b: 0x96)
-    /// Apricot Cream — warm highlight / dividers
-    static let appApricot    = Color(r: 0xF9, g: 0xC7, b: 0x84)
-    /// Near-black for primary text on light backgrounds
-    static let appTextDark   = Color(red: 0.1, green: 0.1, blue: 0.1)
-    /// DuskBlue as secondary / muted text
-    static let appTextMuted  = Color(r: 0x48, g: 0x56, b: 0x96)
+    /// Amaranth #CE4257 — primary brand colour, CTAs, tab bar background
+    static let appPrimary    = Color(r: 0xCE, g: 0x42, b: 0x57)
+    /// Spicy Paprika #DB5316 — secondary accent, gradients, refresh button
+    static let appSecondary  = Color(r: 0xDB, g: 0x53, b: 0x16)
+    /// Pitch Black #141204 — primary text
+    static let appTextDark   = Color(r: 0x14, g: 0x12, b: 0x04)
+    /// Deep Mocha #433633 — secondary text, placeholders, muted icons
+    static let appTextMuted  = Color(r: 0x43, g: 0x36, b: 0x33)
 
     init(r: UInt8, g: UInt8, b: UInt8) {
         self.init(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255)

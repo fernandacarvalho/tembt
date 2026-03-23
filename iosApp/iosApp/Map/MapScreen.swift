@@ -22,19 +22,25 @@ struct MapScreen: View {
             } else if let error = host.uiState.error {
                 VStack(spacing: 16) {
                     Text("Erro ao carregar")
-                        .font(.headline)
+                        .font(.appH3)
+                        .foregroundColor(.appTextDark)
                     Text(error)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(.appBody)
+                        .foregroundColor(.appTextMuted)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
                     Button("Tentar novamente") { host.checkPermission() }
                         .buttonStyle(.borderedProminent)
+                        .tint(.appPrimary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             } else if let center = host.uiState.center {
-                MapReadyView(center: center, host: host)
+                MapReadyView(
+                    center: center,
+                    courtName: host.uiState.courtName,
+                    host: host
+                )
             }
         }
         .onAppear { host.checkPermission() }
@@ -48,6 +54,7 @@ struct MapScreen: View {
 private struct MapReadyView: View {
 
     let center: MapCoordinates
+    let courtName: String
     @ObservedObject var host: MapViewModelHost
     @State private var centerTrigger = 0
 
@@ -61,33 +68,52 @@ private struct MapReadyView: View {
             MapViewRepresentable(center: center, players: players, centerTrigger: centerTrigger)
                 .ignoresSafeArea()
 
-            HStack(spacing: 6) {
-                Text("\(players.count) jogadores no local")
+            courtInfo
+            mapTarget
+        }
+    }
+
+    private var courtInfo: some View {
+        HStack(alignment: .center, spacing: 0) {
+                VStack(alignment: .leading, spacing: 2) {
+                    if !courtName.isEmpty {
+                        Text(courtName)
+                            .font(.appSubtitle)
+                            .foregroundColor(.appTextDark)
+                    }
+                    Text("\(players.count) jogadores no local agora")
+                        .font(.appBody)
+                        .foregroundColor(.appTextDark)
+                }
+                Spacer()
                 Button(action: { host.refreshPlayers() }) {
                     Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.appSecondary)
                 }
+                .padding(.leading, 12)
             }
-            .font(.subheadline)
-            .fontWeight(.medium)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(Color.appBackground, in: Capsule())
+            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
             .padding(.top, 56)
-            .padding(.leading, 16)
+            .padding(.horizontal, 16)
+    }
 
-Button(action: { centerTrigger += 1 }) {
+    private var mapTarget: some View {
+        Button(action: { centerTrigger += 1 }) {
                 Image(systemName: "location.fill")
-                    .font(.headline)
-                    .frame(width: 56, height: 56)
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.appTextMuted)
+                    .frame(width: 44, height: 44)
+                    .background(Color.appBackground)
                     .clipShape(Circle())
-                    .shadow(radius: 4)
+                    .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 1)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             .padding(.trailing, 16)
-            .padding(.bottom, 32)
+            .padding(.bottom, 120)
             .ignoresSafeArea(edges: .bottom)
-        }
     }
 }

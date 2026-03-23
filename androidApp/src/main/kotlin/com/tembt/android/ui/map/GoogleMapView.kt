@@ -168,9 +168,9 @@ private fun setupPlayerLayers(style: org.maplibre.android.maps.Style, players: L
         setFilter(has("point_count"))
         setProperties(
             circleRadius(18f),
-            circleColor("#FF9500"),
+            circleColor("#DB5316"),
             circleStrokeWidth(2f),
-            circleStrokeColor("#FFFFFF")
+            circleStrokeColor("#E7E7E7")
         )
     })
 
@@ -204,13 +204,13 @@ private fun setupCourtCircle(style: org.maplibre.android.maps.Style, center: Map
 
     style.addLayer(FillLayer(LAYER_COURT_FILL, COURT_SOURCE_ID).apply {
         setProperties(
-            fillColor("#FF9500"),
+            fillColor("#DB5316"),
             fillOpacity(0.10f)
         )
     })
     style.addLayer(LineLayer(LAYER_COURT_STROKE, COURT_SOURCE_ID).apply {
         setProperties(
-            lineColor("#FF9500"),
+            lineColor("#DB5316"),
             lineWidth(1.5f)
         )
     })
@@ -241,11 +241,11 @@ private fun createPlayerMarkerBitmap(): Bitmap {
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
-    // Background circle
-    val bg = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#FF9500") }
+    // Background circle — Spicy Paprika #DB5316 with Alabaster Grey border
+    val bg = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#DB5316") }
     canvas.drawCircle(cx, cx, cx - 2f, bg)
     val border = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE; style = Paint.Style.STROKE; strokeWidth = 3f
+        color = Color.parseColor("#E7E7E7"); style = Paint.Style.STROKE; strokeWidth = 3f
     }
     canvas.drawCircle(cx, cx, cx - 2f, border)
 

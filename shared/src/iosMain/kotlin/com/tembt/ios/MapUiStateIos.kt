@@ -12,6 +12,7 @@ class MapUiStateIos(
     val isPermissionRequired: Boolean,
     val isDenied: Boolean,
     val center: MapCoordinates?,
+    val courtName: String,
     val error: String?,
     val players: List<PlayerIos>
 ) {
@@ -22,6 +23,7 @@ class MapUiStateIos(
                 isPermissionRequired = false,
                 isDenied = false,
                 center = null,
+                courtName = "",
                 error = null,
                 players = emptyList()
             )
@@ -30,6 +32,7 @@ class MapUiStateIos(
                 isPermissionRequired = true,
                 isDenied = state.status == LocationPermissionStatus.DENIED,
                 center = null,
+                courtName = "",
                 error = null,
                 players = emptyList()
             )
@@ -38,6 +41,7 @@ class MapUiStateIos(
                 isPermissionRequired = false,
                 isDenied = false,
                 center = state.center,
+                courtName = state.courtName,
                 error = null,
                 players = state.players.map { PlayerIos(it.uuid, it.name, it.lat, it.lng) }
             )
@@ -46,6 +50,7 @@ class MapUiStateIos(
                 isPermissionRequired = false,
                 isDenied = false,
                 center = null,
+                courtName = "",
                 error = state.message,
                 players = emptyList()
             )

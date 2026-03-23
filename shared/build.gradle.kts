@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -75,6 +76,18 @@ kotlin {
 
 compose.resources {
     packageOfResClass = "com.tembt.shared.generated.resources"
+}
+
+kover {
+    currentProject {
+        sources {
+            // Only measure commonMain — exclude platform-specific source sets
+            excludedSourceSets.addAll(
+                "androidMain", "iosMain",
+                "iosX64Main", "iosArm64Main", "iosSimulatorArm64Main"
+            )
+        }
+    }
 }
 
 android {

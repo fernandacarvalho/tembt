@@ -7,8 +7,11 @@ import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import com.tembt.ui.theme.AlabasterGrey
+import com.tembt.ui.theme.Amaranth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,24 +42,34 @@ private fun MainTabs() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(containerColor = Amaranth) {
+                val itemColors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = AlabasterGrey,
+                    selectedTextColor = AlabasterGrey,
+                    indicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                    unselectedIconColor = AlabasterGrey.copy(alpha = 0.6f),
+                    unselectedTextColor = AlabasterGrey.copy(alpha = 0.6f),
+                )
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
                     icon = { Icon(Icons.Default.Map, contentDescription = null) },
-                    label = { Text("Quadra") }
+                    label = { Text("Quadra") },
+                    colors = itemColors
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
-                    label = { Text("Lista") }
+                    label = { Text("Lista") },
+                    colors = itemColors
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
                     icon = { Icon(Icons.Default.EmojiEvents, contentDescription = null) },
-                    label = { Text("Torneios") }
+                    label = { Text("Torneios") },
+                    colors = itemColors
                 )
             }
         }

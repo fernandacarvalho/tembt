@@ -120,6 +120,36 @@ class MapViewModelTest {
             assertEquals(players, state.players)
         }
 
+    @Test
+    fun `given court returns name state is MapReady with courtName`() =
+        runTest(testDispatcher) {
+            val center = MapCoordinates(latitude = -23.0, longitude = -46.0, name = "Quadra Mario Beletti")
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            courtRepo.willReturn(Result.success(center))
+            playersRepo.willReturn(Result.success(emptyList()))
+
+            val vm = createViewModel()
+            advanceUntilIdle()
+
+            val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
+            assertEquals("Quadra Mario Beletti", state.courtName)
+        }
+
+    @Test
+    fun `given court returns no name state is MapReady with empty courtName`() =
+        runTest(testDispatcher) {
+            val center = MapCoordinates(latitude = -23.0, longitude = -46.0)
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            courtRepo.willReturn(Result.success(center))
+            playersRepo.willReturn(Result.success(emptyList()))
+
+            val vm = createViewModel()
+            advanceUntilIdle()
+
+            val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
+            assertEquals("", state.courtName)
+        }
+
     // --- Error states ---
 
     @Test
