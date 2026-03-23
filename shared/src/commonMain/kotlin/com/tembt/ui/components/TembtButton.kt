@@ -16,11 +16,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tembt.shared.generated.resources.HelveticaNeueCondensedBlack
-import com.tembt.shared.generated.resources.Res
 import com.tembt.ui.theme.Amaranth
 import com.tembt.ui.theme.AlabasterGrey
-import org.jetbrains.compose.resources.Font
+import com.tembt.ui.theme.condensedBlackFontFamily
 
 enum class TembtButtonStyle {
     /** White border, transparent fill, white text — for use on coloured backgrounds */
@@ -40,7 +38,7 @@ fun TembtButton(
     enabled: Boolean = true,
     isLoading: Boolean = false,
 ) {
-    val fontFamily = FontFamily(Font(Res.font.HelveticaNeueCondensedBlack, weight = FontWeight.Black))
+    val fontFamily = condensedBlackFontFamily()
 
     val containerColor = when (style) {
         TembtButtonStyle.Stroke        -> Color.Transparent
