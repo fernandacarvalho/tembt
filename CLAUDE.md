@@ -310,6 +310,42 @@ Use the next sequential hex IDs after the last ones in the file.
 
 ---
 
+## Typography
+
+### Condensed display font
+
+Used for screen titles and heavy display text (e.g. "Bora pro **play?**").
+
+| Platform | Font | License | Files |
+|---|---|---|---|
+| iOS | Helvetica Neue Condensed | Proprietary — **never ship in Android bundle** | `iosMain/composeResources/font/` |
+| Android | Barlow Condensed | SIL Open Font License — safe to distribute | `commonMain/composeResources/font/` |
+
+### API — `com.tembt.ui.theme` (expect/actual)
+
+| Function | Returns | Use for |
+|---|---|---|
+| `condensedBlackFontFamily()` | Single-font family, Black weight | Heaviest display word (e.g. "play?") |
+| `condensedBoldFontFamily()` | Single-font family, Bold weight | Medium display text (e.g. "Bora pro ") |
+| `condensedFontFamily()` | Family with both weights registered | Avoid — weight resolution unreliable on iOS |
+
+Always use `condensedBlackFontFamily()` / `condensedBoldFontFamily()` separately instead of a shared `condensedFontFamily()`. This guarantees each `Text` loads the correct file without relying on CMP's weight-matching logic, which is unreliable for custom fonts on iOS.
+
+### Rules
+
+- **Never use** `condensedFontFamily()` with `SpanStyle(fontWeight = ...)` — weight resolution from a multi-font family is broken on iOS CMP.
+- **Use separate Text composables** with `Modifier.alignByBaseline()` when mixing Bold + Black in the same line.
+- **Never add** iOS font files to `commonMain` or `androidMain` — Helvetica Neue is proprietary.
+- **Never add** Barlow or other OFL fonts to `iosMain` if the design calls for Helvetica Neue there.
+
+### iOS font files
+
+All 14 variants are extracted from `HelveticaNeue.ttc` and live in `shared/src/iosMain/composeResources/font/` for reference.
+
+**Important:** The two variants actively used by `FontProvider.ios.kt` (`HelveticaNeue-CondensedBold.otf` and `HelveticaNeue-CondensedBlack.otf`) are in `commonMain/composeResources/font/` — CMP does NOT embed `iosMain` composeResources into the Kotlin/Native framework at runtime. Only `commonMain` resources are reliably bundled on iOS.
+
+---
+
 ## Dependencies (preferred)
 
 | Purpose | Library |

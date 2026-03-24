@@ -3,8 +3,18 @@ package com.tembt.ui.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 
-// Font used for button labels and display text requiring condensed black weight.
-// iOS: Helvetica Neue Condensed Black (bundled — licensed for iOS system use).
-// Android: Roboto (system font, Apache 2.0) — Helvetica is proprietary and must not ship on Android.
+// Condensed Black — heaviest display weight ("play?" in the schedule header).
+// iOS: Helvetica Neue Condensed Black (bundled). Android: Barlow Condensed Black (SIL OFL).
 @Composable
 expect fun condensedBlackFontFamily(): FontFamily
+
+// Condensed Bold — bold display weight ("Bora pro" in the schedule header).
+// iOS: same Condensed Black file declared at Bold weight (only condensed variant available).
+// Android: Barlow Condensed Bold (SIL OFL).
+@Composable
+expect fun condensedBoldFontFamily(): FontFamily
+
+// Combined condensed family with Bold + Black weights registered.
+// Use this as the base fontFamily on Text when a single title mixes both weights via SpanStyle.
+@Composable
+expect fun condensedFontFamily(): FontFamily

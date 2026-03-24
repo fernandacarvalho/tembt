@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.tembt.shared.generated.resources.BarlowCondensed_Black
+import com.tembt.shared.generated.resources.BarlowCondensed_Bold
 import com.tembt.shared.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
@@ -12,3 +13,13 @@ import org.jetbrains.compose.resources.Font
 @Composable
 actual fun condensedBlackFontFamily(): FontFamily =
     FontFamily(Font(Res.font.BarlowCondensed_Black, weight = FontWeight.Black))
+
+@Composable
+actual fun condensedBoldFontFamily(): FontFamily =
+    FontFamily(Font(Res.font.BarlowCondensed_Bold, weight = FontWeight.Bold))
+
+@Composable
+actual fun condensedFontFamily(): FontFamily = FontFamily(
+    Font(Res.font.BarlowCondensed_Bold, weight = FontWeight.Bold),
+    Font(Res.font.BarlowCondensed_Black, weight = FontWeight.Black),
+)
