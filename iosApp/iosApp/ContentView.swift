@@ -5,6 +5,7 @@ import shared
 struct ContentView: View {
 
     @StateObject private var appHost = AppViewModelHost()
+    @State private var selectedTab = 0
 
     var body: some View {
         if appHost.showWelcome {
@@ -13,14 +14,22 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
         } else {
-            MainTabs()
+            MainTabs(selectedTab: $selectedTab)
+                .onOpenURL { url in
+                    if url.scheme == "tembt", url.host == "schedule" {
+                        selectedTab = 1  // Lista tab index
+                    }
+                }
         }
     }
 }
 
 private struct MainTabs: View {
 
-    init() {
+    @Binding var selectedTab: Int
+
+    init(selectedTab: Binding<Int>) {
+        _selectedTab = selectedTab
         // iOS 26: no UITabBarAppearance — any appearance setting overrides the native
         // Liquid Glass material and makes the pill appear opaque. Let the system render it.
         if #available(iOS 26, *) { } else {
@@ -42,15 +51,18 @@ private struct MainTabs: View {
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             MapScreen()
                 .tabItem { Label("Quadra", systemImage: "map.fill") }
+                .tag(0)
             ComposeHostingView { ViewControllersKt.scheduleViewController() }
                 .ignoresSafeArea()
                 .tabItem { Label("Lista", systemImage: "list.bullet") }
+                .tag(1)
             ComposeHostingView { ViewControllersKt.tournamentViewController() }
                 .ignoresSafeArea()
                 .tabItem { Label("Torneios", systemImage: "trophy.fill") }
+                .tag(2)
         }
         .tint(Color.appPrimary)
     }

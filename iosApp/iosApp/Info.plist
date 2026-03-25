@@ -37,5 +37,16 @@
     <string>Este app precisa da sua localização para mostrar o mapa e os pontos de interesse próximos a você.</string>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.tembt.deeplink</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>tembt</string>
+            </array>
+        </dict>
+    </array>
 </dict>
 </plist>

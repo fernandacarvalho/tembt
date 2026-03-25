@@ -29,11 +29,18 @@ import androidx.compose.material.icons.outlined.IosShare
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import com.tembt.presentation.schedule.ScheduleUiEvent
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +68,7 @@ import com.tembt.ui.theme.AlabasterGrey
 import com.tembt.ui.theme.Amaranth
 import com.tembt.ui.theme.DeepMocha
 import com.tembt.ui.theme.PitchBlack
+import com.tembt.ui.theme.SpicyPaprika
 import com.tembt.ui.theme.TembtWhite
 import com.tembt.ui.theme.condensedBlackFontFamily
 import com.tembt.ui.theme.condensedBoldFontFamily
@@ -85,8 +93,22 @@ private val AVATAR_COLORS = listOf(
 @Composable
 fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val clipboard = LocalClipboardManager.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BG_LIGHT)) {
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is ScheduleUiEvent.CopyShareLink -> {
+                    clipboard.setText(AnnotatedString(event.url))
+                    snackbarHostState.showSnackbar("Link copiado!")
+                }
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BG_LIGHT)) {
         // SVG painters on iOS ignore ContentScale and stretch to fill bounds.
         // We manually compute the proportional size (equivalent to ContentScale.Crop)
         // so that FillBounds draws the correct aspect ratio.
@@ -130,14 +152,29 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
 
             is ScheduleUiState.Ready -> {
                 val onCheckin = remember(viewModel) { viewModel::checkin }
+                val onShare = remember(viewModel) { viewModel::shareWindow }
                 PollContent(
                     window = state.window,
                     checkedInSlotTime = state.checkedInSlotTime,
-                    onCheckin = onCheckin
+                    onCheckin = onCheckin,
+                    onShare = onShare
                 )
             }
         }
-    }
+        }  // BoxWithConstraints
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp),
+            snackbar = { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = SpicyPaprika,
+                    contentColor = TembtWhite
+                )
+            }
+        )
+    }  // Box
 }
 
 
@@ -145,7 +182,8 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
 private fun PollContent(
     window: ScheduleWindow,
     checkedInSlotTime: String?,
-    onCheckin: (String) -> Unit
+    onCheckin: (String) -> Unit,
+    onShare: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -157,6 +195,7 @@ private fun PollContent(
         item {
             PollHeader(
                 window = window,
+                onShare = onShare,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp, bottom = 12.dp)
@@ -174,7 +213,7 @@ private fun PollContent(
 }
 
 @Composable
-private fun PollHeader(window: ScheduleWindow, modifier: Modifier = Modifier) {
+private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Modifier = Modifier) {
     val formattedDate = remember(window.date) { formatPollDate(window.date) }
     // Each Text gets its own single-font FontFamily so CMP resolves the correct
     // file without ambiguity (multi-weight FontFamily resolution is unreliable on iOS).
@@ -217,7 +256,7 @@ private fun PollHeader(window: ScheduleWindow, modifier: Modifier = Modifier) {
             }
 
             IconButton(
-                onClick = {},
+                onClick = onShare,
                 modifier = Modifier
                     .size(44.dp)
                     .shadow(4.dp, CircleShape)

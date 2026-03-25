@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import com.tembt.ui.theme.AlabasterGrey
 import com.tembt.ui.theme.Amaranth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,19 +27,23 @@ import com.tembt.presentation.app.AppViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RootScreen(viewModel: AppViewModel = koinViewModel()) {
+fun RootScreen(viewModel: AppViewModel = koinViewModel(), deepLinkTab: Int? = null) {
     val showWelcome by viewModel.showWelcome.collectAsStateWithLifecycle()
 
     if (showWelcome) {
         WelcomeScreen(onRegistered = { viewModel.onRegistered() })
     } else {
-        MainTabs()
+        MainTabs(deepLinkTab = deepLinkTab)
     }
 }
 
 @Composable
-private fun MainTabs() {
+private fun MainTabs(deepLinkTab: Int? = null) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(deepLinkTab) {
+        if (deepLinkTab != null) selectedTab = deepLinkTab
+    }
 
     Scaffold(
         bottomBar = {

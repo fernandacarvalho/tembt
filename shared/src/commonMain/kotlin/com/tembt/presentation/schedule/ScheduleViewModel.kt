@@ -5,9 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.tembt.domain.usecase.CheckinUseCase
 import com.tembt.domain.usecase.GetWindowUseCase
 import com.tembt.platform.DeviceIdentityProvider
+import com.tembt.util.logD
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -19,6 +23,9 @@ class ScheduleViewModel(
 
     private val _uiState = MutableStateFlow<ScheduleUiState>(ScheduleUiState.Loading)
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = MutableSharedFlow<ScheduleUiEvent>()
+    val uiEvent: SharedFlow<ScheduleUiEvent> = _uiEvent.asSharedFlow()
 
     init {
         loadWindow()
@@ -37,6 +44,17 @@ class ScheduleViewModel(
     /** Called from iOS deinit via ScheduleViewModelIos.clear() to stop in-flight coroutines. */
     fun cancel() {
         viewModelScope.cancel()
+    }
+
+    fun shareWindow() {
+        val current = _uiState.value as? ScheduleUiState.Ready ?: return
+        logD("ScheduleViewModel", "share button clicked for window date=${current.window.date}")
+        viewModelScope.launch {
+            // TODO: replace with a universal link (https://tembt.app/schedule?date=…) once the
+            //  app is published to the App Store and Play Store and deep-link routing is configured.
+            val url = "tembt://schedule?date=${current.window.date}"
+            _uiEvent.emit(ScheduleUiEvent.CopyShareLink(url))
+        }
     }
 
     fun checkin(slotTime: String) {
