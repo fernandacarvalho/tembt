@@ -308,7 +308,7 @@ private fun PollSlotItem(
         Text(
             text = slot.time,
             color = TEXT_PRIMARY,
-            fontSize = 20.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.weight(1f)
         )

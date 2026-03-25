@@ -42,7 +42,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.tembt.android.ui.permission.PermissionScreen
+import com.tembt.ui.permission.PermissionScreen
 import com.tembt.presentation.map.MapUiEvent
 import com.tembt.presentation.map.MapUiState
 import com.tembt.presentation.map.MapViewModel
@@ -97,7 +97,7 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
 
         is MapUiState.PermissionRequired -> {
             PermissionScreen(
-                permissionStatus = state.status,
+                isDenied = state.status == com.tembt.domain.model.LocationPermissionStatus.DENIED,
                 onRequestPermission = {
                     permissionLauncher.launch(
                         arrayOf(

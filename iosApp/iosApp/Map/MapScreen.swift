@@ -1,10 +1,15 @@
 import SwiftUI
+import CoreLocation
 import shared
 
 struct MapScreen: View {
 
     @StateObject private var host = MapViewModelHost()
     @Environment(\.scenePhase) private var scenePhase
+
+    // Permission requesting (moved from PermissionScreen.swift)
+    @State private var isAwaitingPermission = false
+    @StateObject private var locationRequester = LocationPermissionRequester()
 
     var body: some View {
         Group {
@@ -13,11 +18,33 @@ struct MapScreen: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             } else if host.uiState.isPermissionRequired {
-                PermissionScreen(
-                    isDenied: host.uiState.isDenied,
-                    onRequestPermission: { host.checkPermission() },
-                    onOpenSettings: { host.checkPermission() }
-                )
+                ZStack {
+                    ComposeHostingView {
+                        ViewControllersKt.permissionViewController(
+                            isDenied: host.uiState.isDenied,
+                            onRequestPermission: { [self] in
+                                isAwaitingPermission = true
+                                locationRequester.requestPermission()
+                            },
+                            onOpenSettings: {
+                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+                        )
+                    }
+                    .ignoresSafeArea()
+
+                    if isAwaitingPermission {
+                        Color.appBackground.ignoresSafeArea()
+                        VStack(spacing: 16) {
+                            ProgressView().scaleEffect(1.4).tint(.appPrimary)
+                            Text("Verificando permissão...")
+                                .font(.appBodySm)
+                                .foregroundColor(.appTextMuted)
+                        }
+                    }
+                }
 
             } else if let error = host.uiState.error {
                 VStack(spacing: 16) {
@@ -43,7 +70,13 @@ struct MapScreen: View {
                 )
             }
         }
-        .onAppear { host.checkPermission() }
+        .onAppear {
+            host.checkPermission()
+            locationRequester.onAuthorizationChanged = { [weak host] in
+                isAwaitingPermission = false
+                host?.checkPermission()
+            }
+        }
         .onChange(of: scenePhase) { phase in
             if phase == .active { host.checkPermission() }
         }
@@ -115,5 +148,37 @@ private struct MapReadyView: View {
             .padding(.trailing, 16)
             .padding(.bottom, 120)
             .ignoresSafeArea(edges: .bottom)
+    }
+}
+
+// MARK: - Permission requester
+
+@MainActor
+final class LocationPermissionRequester: NSObject, ObservableObject, CLLocationManagerDelegate {
+
+    var onAuthorizationChanged: (() -> Void)?
+
+    private let manager = CLLocationManager()
+
+    override init() {
+        super.init()
+        manager.delegate = self
+    }
+
+    func requestPermission() {
+        manager.requestWhenInUseAuthorization()
+    }
+
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        Task { @MainActor in
+            let status = manager.authorizationStatus
+            if status != .notDetermined {
+                onAuthorizationChanged?()
+            }
+        }
+    }
+
+    deinit {
+        manager.delegate = nil
     }
 }

@@ -1,7 +1,7 @@
 package com.tembt.android.ui.theme
 
 // Theme and palette are defined in the shared module: com.tembt.ui.theme
-// These constants are kept here only for Android-specific screens (MapScreen, PermissionScreen)
+// These constants are kept here only for Android-specific screens (MapScreen)
 // that reference them directly. New screens should import from com.tembt.ui.theme.
 import androidx.compose.ui.graphics.Color
 
