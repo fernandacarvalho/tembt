@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -79,7 +79,7 @@ import kotlinx.datetime.LocalDate
 import org.koin.compose.viewmodel.koinViewModel
 
 private val BG_LIGHT        = AlabasterGrey
-private val CARD_WHITE      = TembtWhite
+private val CARD_BG         = AlabasterGrey
 private val BRAND_RED       = Amaranth
 private val TEXT_PRIMARY    = PitchBlack
 private val TEXT_SECONDARY  = DeepMocha
@@ -107,24 +107,12 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BG_LIGHT)) {
-        // SVG painters on iOS ignore ContentScale and stretch to fill bounds.
-        // We manually compute the proportional size (equivalent to ContentScale.Crop)
-        // so that FillBounds draws the correct aspect ratio.
-        val svgW = 375f
-        val svgH = 667f
-        val scale = maxOf(maxWidth.value / svgW, maxHeight.value / svgH)
-        val imgW = (svgW * scale).dp
-        val imgH = (svgH * scale).dp
-
+    Box(modifier = Modifier.fillMaxSize().background(BG_LIGHT)) {
         Image(
             painter = painterResource(Res.drawable.schedule_bg),
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .size(imgW, imgH)
-                .align(Alignment.TopCenter)
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
 
         when (val state = uiState) {
@@ -161,7 +149,6 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
                 )
             }
         }
-        }  // BoxWithConstraints
 
         SnackbarHost(
             hostState = snackbarHostState,
@@ -174,7 +161,7 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
                 )
             }
         )
-    }  // Box
+    }
 }
 
 
@@ -188,7 +175,8 @@ private fun PollContent(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding(),
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -298,8 +286,9 @@ private fun PollSlotItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(2.dp, RoundedCornerShape(14.dp))
             .clip(RoundedCornerShape(14.dp))
-            .background(CARD_WHITE)
+            .background(CARD_BG)
             .clickable(onClick = onTap)
             .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
@@ -363,7 +352,7 @@ private fun PlayerAvatarsWithCount(players: List<SlotPlayer>) {
                         .size(avatarSize.dp)
                         .clip(CircleShape)
                         .background(color)
-                        .border(2.dp, CARD_WHITE, CircleShape),
+                        .border(2.dp, CARD_BG, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

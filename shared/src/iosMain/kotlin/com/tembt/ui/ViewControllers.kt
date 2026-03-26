@@ -24,16 +24,12 @@ fun tournamentViewController(): UIViewController =
     }
 
 fun permissionViewController(
-    isDenied: Boolean,
-    onRequestPermission: () -> Unit,
-    onOpenSettings: () -> Unit
+    onRequestPermission: () -> Unit
 ): UIViewController =
     ComposeUIViewController {
         TembtTheme {
             PermissionScreen(
-                isDenied = isDenied,
-                onRequestPermission = onRequestPermission,
-                onOpenSettings = onOpenSettings
+                onRequestPermission = onRequestPermission
             )
         }
     }

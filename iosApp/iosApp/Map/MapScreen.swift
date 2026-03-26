@@ -21,15 +21,9 @@ struct MapScreen: View {
                 ZStack {
                     ComposeHostingView {
                         ViewControllersKt.permissionViewController(
-                            isDenied: host.uiState.isDenied,
                             onRequestPermission: { [self] in
                                 isAwaitingPermission = true
                                 locationRequester.requestPermission()
-                            },
-                            onOpenSettings: {
-                                if let url = URL(string: UIApplication.openSettingsURLString) {
-                                    UIApplication.shared.open(url)
-                                }
                             }
                         )
                     }
@@ -78,7 +72,10 @@ struct MapScreen: View {
             }
         }
         .onChange(of: scenePhase) { phase in
-            if phase == .active { host.checkPermission() }
+            if phase == .active {
+                isAwaitingPermission = false
+                host.checkPermission()
+            }
         }
     }
 }
@@ -166,7 +163,14 @@ final class LocationPermissionRequester: NSObject, ObservableObject, CLLocationM
     }
 
     func requestPermission() {
-        manager.requestWhenInUseAuthorization()
+        let status = manager.authorizationStatus
+        if status == .denied || status == .restricted {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        } else {
+            manager.requestWhenInUseAuthorization()
+        }
     }
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {

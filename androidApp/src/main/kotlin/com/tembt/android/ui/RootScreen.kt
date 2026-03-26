@@ -12,7 +12,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import com.tembt.ui.theme.AlabasterGrey
 import com.tembt.ui.theme.Amaranth
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -78,11 +81,13 @@ private fun MainTabs(deepLinkTab: Int? = null) {
                 )
             }
         }
-    ) { _ ->
-        when (selectedTab) {
-            0 -> MapScreen()
-            1 -> ScheduleScreen()
-            2 -> TournamentScreen()
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())) {
+            when (selectedTab) {
+                0 -> MapScreen()
+                1 -> ScheduleScreen()
+                2 -> TournamentScreen()
+            }
         }
     }
 }

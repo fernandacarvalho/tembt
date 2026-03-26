@@ -36,9 +36,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun PermissionScreen(
-    isDenied: Boolean,
-    onRequestPermission: () -> Unit,
-    onOpenSettings: () -> Unit
+    onRequestPermission: () -> Unit
 ) {
     val boldFont = condensedBoldFontFamily()
 
@@ -58,7 +56,6 @@ fun PermissionScreen(
                     .padding(horizontal = 28.dp)
                     .padding(top = 24.dp)
             ) {
-                // 1. Single line — let it wrap naturally only if needed
                 Text(
                     text = "Acesso à localização",
                     fontFamily = boldFont,
@@ -70,10 +67,7 @@ fun PermissionScreen(
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = if (isDenied)
-                        "Você negou o acesso à sua localização. Para visualizar a quantidade de jogadores na quadra em tempo real, habilite nas configurações do aparelho."
-                    else
-                        "O TEMBT precisa da sua localização para funcionar. Veja abaixo o que é solicitado e por quê.",
+                    text = "Para visualizar a quantidade de jogadores na quadra em tempo real, habilite sua localização nas configurações do aparelho.",
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight.Normal,
@@ -83,7 +77,6 @@ fun PermissionScreen(
 
             Spacer(Modifier.height(32.dp))
 
-            // 2. Card with 24px lateral margins from screen edges
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -108,49 +101,47 @@ fun PermissionScreen(
                     message = "Usamos a sua localização para calcular sua distância da quadra e informar o número de jogadores presentes. Todos em quadra são listados de forma anônima. Não divulgaremos onde você está."
                 )
 
-                if (isDenied) {
-                    Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(24.dp))
 
-                    Text(
-                        text = "COMO HABILITAR",
-                        fontFamily = boldFont,
-                        fontSize = 18.sp,
-                        letterSpacing = 0.5.sp,
-                        color = SpicyPaprika
-                    )
+                Text(
+                    text = "COMO HABILITAR",
+                    fontFamily = boldFont,
+                    fontSize = 18.sp,
+                    letterSpacing = 0.5.sp,
+                    color = SpicyPaprika
+                )
 
-                    Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(10.dp))
 
-                    Text(
-                        text = buildAnnotatedString {
-                            append("Vá em ")
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsAppName) }
-                            append(" > ")
-                            settingsPath.split(" > ").forEachIndexed { index, segment ->
-                                if (index > 0) append(" > ")
-                                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(segment) }
-                            }
-                            append("\ne escolha a opção \"")
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsOption) }
-                            append("\"")
-                        },
-                        fontSize = 15.sp,
-                        lineHeight = 22.sp,
-                        color = PitchBlack
-                    )
-                }
+                Text(
+                    text = buildAnnotatedString {
+                        append("Vá em ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsAppName) }
+                        append(" > ")
+                        settingsPath.split(" > ").forEachIndexed { index, segment ->
+                            if (index > 0) append(" > ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(segment) }
+                        }
+                        append("\ne escolha a opção \"")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsOption) }
+                        append("\"")
+                    },
+                    fontSize = 15.sp,
+                    lineHeight = 22.sp,
+                    color = PitchBlack
+                )
 
-                // 4. Button 50px below last text
                 Spacer(Modifier.height(50.dp))
 
-                // 3. Button with shadow
                 TembtButton(
-                    title = if (isDenied) "CONFIGURAÇÕES" else "PERMITIR LOCALIZAÇÃO",
-                    onClick = if (isDenied) onOpenSettings else onRequestPermission,
+                    title = "PERMITIR LOCALIZAÇÃO",
+                    onClick = onRequestPermission,
                     style = TembtButtonStyle.SolidInverted,
                     modifier = Modifier.shadow(
-                        elevation = 4.dp,
-                        shape = RoundedCornerShape(50.dp)
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(50.dp),
+                        ambientColor = Color.Black.copy(alpha = 0.6f),
+                        spotColor = Color.Black.copy(alpha = 0.4f)
                     )
                 )
             }

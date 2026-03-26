@@ -97,7 +97,6 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
 
         is MapUiState.PermissionRequired -> {
             PermissionScreen(
-                isDenied = state.status == com.tembt.domain.model.LocationPermissionStatus.DENIED,
                 onRequestPermission = {
                     permissionLauncher.launch(
                         arrayOf(
@@ -105,8 +104,7 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         )
                     )
-                },
-                onOpenSettings = { viewModel.onOpenSettingsRequested() }
+                }
             )
         }
 
