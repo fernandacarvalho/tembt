@@ -7,7 +7,6 @@ struct MapScreen: View {
     @StateObject private var host = MapViewModelHost()
     @Environment(\.scenePhase) private var scenePhase
 
-    // Permission requesting (moved from PermissionScreen.swift)
     @State private var isAwaitingPermission = false
     @StateObject private var locationRequester = LocationPermissionRequester()
 
@@ -33,7 +32,7 @@ struct MapScreen: View {
                         Color.appBackground.ignoresSafeArea()
                         VStack(spacing: 16) {
                             ProgressView().scaleEffect(1.4).tint(.appPrimary)
-                            Text("Verificando permissão...")
+                            Text(String(localized: "map_verifying_permission"))
                                 .font(.appBodySm)
                                 .foregroundColor(.appTextMuted)
                         }
@@ -42,7 +41,7 @@ struct MapScreen: View {
 
             } else if let error = host.uiState.error {
                 VStack(spacing: 16) {
-                    Text("Erro ao carregar")
+                    Text(String(localized: "map_error"))
                         .font(.appH3)
                         .foregroundColor(.appTextDark)
                     Text(error)
@@ -50,7 +49,7 @@ struct MapScreen: View {
                         .foregroundColor(.appTextMuted)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
-                    Button("Tentar novamente") { host.checkPermission() }
+                    Button(String(localized: "map_retry")) { host.checkPermission() }
                         .buttonStyle(.borderedProminent)
                         .tint(.appPrimary)
                 }
@@ -111,7 +110,7 @@ private struct MapReadyView: View {
                             .font(.appSubtitle)
                             .foregroundColor(.appTextDark)
                     }
-                    Text("\(players.count) jogadores no local agora")
+                    Text(String(format: String(localized: "map_players_count"), players.count))
                         .font(.appBody)
                         .foregroundColor(.appTextDark)
                 }
@@ -123,7 +122,7 @@ private struct MapReadyView: View {
                 }
                 .padding(.leading, 12)
             }
-            .padding(.horizontal, 14)
+            .padding(.horizontal, 24)
             .padding(.vertical, 10)
             .background(Color.appBackground, in: Capsule())
             .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)

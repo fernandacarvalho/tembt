@@ -1,8 +1,10 @@
 package com.tembt.domain.usecase
 
+import com.tembt.domain.model.CourtSchedule
 import com.tembt.domain.model.LocationUpdateInterval
 import com.tembt.domain.model.MapCoordinates
 import com.tembt.domain.repository.CourtRepository
+import com.tembt.domain.repository.WindowRepository
 import com.tembt.platform.CourtScheduleStorage
 import com.tembt.platform.LocationServiceContract
 import com.tembt.platform.PlayerStorage
@@ -14,10 +16,12 @@ import kotlinx.datetime.LocalDate
  * Each platform worker/service calls [runCycle] with today's date.
  * The coordinator:
  *  1. Returns null immediately if the user paused monitoring for today.
- *  2. Checks whether the court is open today (weekend / holiday).
- *  3. Fetches the court location and the user's last known location.
- *  4. Sends the user's location to the API.
- *  5. Returns the [LocationUpdateInterval] the platform should wait before the next cycle.
+ *  2. Fetches the court session window from the API.
+ *  3. Checks whether the session is scheduled for today using the API date.
+ *  4. Persists the session hours from the API so the scheduler uses them.
+ *  5. Fetches the court location and the user's last known location.
+ *  6. Sends the user's location to the API.
+ *  7. Returns the [LocationUpdateInterval] the platform should wait before the next cycle.
  *
  * Returns **null** when monitoring should stop (user opted out, court closed, or
  * location data unavailable).
@@ -29,6 +33,7 @@ class LocationMonitoringCoordinator(
     private val sendLocation: SendLocation,
     private val locationService: LocationServiceContract,
     private val courtRepository: CourtRepository,
+    private val windowRepository: WindowRepository,
     private val playerStorage: PlayerStorage,
     private val courtScheduleStorage: CourtScheduleStorage
 ) {
@@ -39,7 +44,11 @@ class LocationMonitoringCoordinator(
      */
     suspend fun runCycle(today: LocalDate): LocationUpdateInterval? {
         if (courtScheduleStorage.isMonitoringPausedFor(today)) return null
-        if (!isCourtOpen(today)) return null
+
+        val window = windowRepository.getWindow().getOrNull() ?: return null
+        if (!isCourtOpen(today, window.date)) return null
+
+        courtScheduleStorage.saveSchedule(CourtSchedule(window.startHour, window.endHour))
 
         val courtCoords = courtRepository.getCourtLocation().getOrNull() ?: return null
         val (userLat, userLng) = locationService.getCurrentLocation() ?: return LocationUpdateInterval.FAR

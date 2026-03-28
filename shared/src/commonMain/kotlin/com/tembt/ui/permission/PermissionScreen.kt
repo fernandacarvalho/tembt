@@ -25,6 +25,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tembt.shared.generated.resources.Res
+import com.tembt.shared.generated.resources.permission_button
+import com.tembt.shared.generated.resources.permission_how_choose
+import com.tembt.shared.generated.resources.permission_how_prefix
+import com.tembt.shared.generated.resources.permission_how_separator
+import com.tembt.shared.generated.resources.permission_how_suffix
+import com.tembt.shared.generated.resources.permission_how_title
+import com.tembt.shared.generated.resources.permission_subtitle
+import com.tembt.shared.generated.resources.permission_title
+import com.tembt.shared.generated.resources.permission_why_body
+import com.tembt.shared.generated.resources.permission_why_title
 import com.tembt.shared.generated.resources.welcome_player
 import com.tembt.ui.components.TembtButton
 import com.tembt.ui.components.TembtButtonStyle
@@ -33,6 +43,7 @@ import com.tembt.ui.theme.PitchBlack
 import com.tembt.ui.theme.SpicyPaprika
 import com.tembt.ui.theme.condensedBoldFontFamily
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PermissionScreen(
@@ -57,7 +68,7 @@ fun PermissionScreen(
                     .padding(top = 24.dp)
             ) {
                 Text(
-                    text = "Acesso à localização",
+                    text = stringResource(Res.string.permission_title),
                     fontFamily = boldFont,
                     fontSize = 36.sp,
                     lineHeight = 42.sp,
@@ -67,7 +78,7 @@ fun PermissionScreen(
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = "Para visualizar a quantidade de jogadores na quadra em tempo real, habilite sua localização nas configurações do aparelho.",
+                    text = stringResource(Res.string.permission_subtitle),
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight.Normal,
@@ -97,14 +108,14 @@ fun PermissionScreen(
                     .padding(bottom = 16.dp)
             ) {
                 PermissionCardSection(
-                    title = "PORQUE PRECISAMOS DA PERMISSÃO?",
-                    message = "Usamos a sua localização para calcular sua distância da quadra e informar o número de jogadores presentes. Todos em quadra são listados de forma anônima. Não divulgaremos onde você está."
+                    title = stringResource(Res.string.permission_why_title),
+                    message = stringResource(Res.string.permission_why_body)
                 )
 
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = "COMO HABILITAR",
+                    text = stringResource(Res.string.permission_how_title),
                     fontFamily = boldFont,
                     fontSize = 18.sp,
                     letterSpacing = 0.5.sp,
@@ -113,18 +124,22 @@ fun PermissionScreen(
 
                 Spacer(Modifier.height(10.dp))
 
+                val howPrefix = stringResource(Res.string.permission_how_prefix)
+                val howSeparator = stringResource(Res.string.permission_how_separator)
+                val howChoose = stringResource(Res.string.permission_how_choose)
+                val howSuffix = stringResource(Res.string.permission_how_suffix)
                 Text(
                     text = buildAnnotatedString {
-                        append("Vá em ")
+                        append(howPrefix)
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsAppName) }
-                        append(" > ")
+                        append(howSeparator)
                         settingsPath.split(" > ").forEachIndexed { index, segment ->
-                            if (index > 0) append(" > ")
+                            if (index > 0) append(howSeparator)
                             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(segment) }
                         }
-                        append("\ne escolha a opção \"")
+                        append(howChoose)
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsOption) }
-                        append("\"")
+                        append(howSuffix)
                     },
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
@@ -134,7 +149,7 @@ fun PermissionScreen(
                 Spacer(Modifier.height(50.dp))
 
                 TembtButton(
-                    title = "PERMITIR LOCALIZAÇÃO",
+                    title = stringResource(Res.string.permission_button),
                     onClick = onRequestPermission,
                     style = TembtButtonStyle.SolidInverted,
                     modifier = Modifier.shadow(

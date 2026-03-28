@@ -115,7 +115,7 @@ class TournamentViewModelTest {
     // --- City forwarding ---
 
     @Test
-    fun `given no city passed to load, repository receives default city`() = runTest(testDispatcher) {
+    fun `given no city passed to load repository receives default city`() = runTest(testDispatcher) {
         repo.willReturn(Result.success(emptyList()))
         val vm = createViewModel()
         advanceUntilIdle()
@@ -124,7 +124,7 @@ class TournamentViewModelTest {
     }
 
     @Test
-    fun `given city passed to load, repository receives that city`() = runTest(testDispatcher) {
+    fun `given city passed to load repository receives that city`() = runTest(testDispatcher) {
         repo.willReturn(Result.success(emptyList()))
         val vm = createViewModel()
         advanceUntilIdle()

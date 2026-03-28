@@ -40,9 +40,14 @@ import com.tembt.presentation.welcome.WelcomeUiEvent
 import com.tembt.presentation.welcome.WelcomeUiState
 import com.tembt.presentation.welcome.WelcomeViewModel
 import com.tembt.shared.generated.resources.Res
+import com.tembt.shared.generated.resources.welcome_button
+import com.tembt.shared.generated.resources.welcome_name_placeholder
 import com.tembt.shared.generated.resources.welcome_player
+import com.tembt.shared.generated.resources.welcome_subtitle
+import com.tembt.shared.generated.resources.welcome_title
 import com.tembt.ui.components.TembtButton
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 private val ColorDeepMocha  = Color(0xFF433633)
@@ -82,7 +87,7 @@ fun WelcomeScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "TEMBT",
+                text = stringResource(Res.string.welcome_title),
                 fontSize = 64.sp,
                 fontWeight = FontWeight.Black,
                 fontStyle = FontStyle.Italic,
@@ -93,7 +98,7 @@ fun WelcomeScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = "Para iniciar, insira seu nome",
+                text = stringResource(Res.string.welcome_subtitle),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.White.copy(alpha = 0.85f),
@@ -106,7 +111,7 @@ fun WelcomeScreen(
                 value = name,
                 onValueChange = { name = it },
                 placeholder = {
-                    Text("Seu nome", color = ColorDeepMocha.copy(alpha = 0.45f))
+                    Text(stringResource(Res.string.welcome_name_placeholder), color = ColorDeepMocha.copy(alpha = 0.45f))
                 },
                 singleLine = true,
                 enabled = uiState !is WelcomeUiState.Loading,
@@ -147,7 +152,7 @@ fun WelcomeScreen(
             Spacer(Modifier.weight(1f))
 
             TembtButton(
-                title = "COMEÇAR A USAR",
+                title = stringResource(Res.string.welcome_button),
                 onClick = {
                     focusManager.clearFocus()
                     viewModel.onStartClicked(name)

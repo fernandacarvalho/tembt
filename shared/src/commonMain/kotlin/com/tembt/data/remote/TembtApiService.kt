@@ -70,6 +70,8 @@ class TembtApiService(private val client: HttpClient) {
 
         ScheduleWindow(
             date = window.targetDate,
+            startHour = window.startHour,
+            endHour = window.endHour,
             slots = window.slots.map { time ->
                 WindowSlot(time = time, players = playersBySlot[time] ?: emptyList())
             }

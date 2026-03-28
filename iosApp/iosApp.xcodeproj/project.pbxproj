@@ -13,10 +13,11 @@
 		B001000000000004 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000004 /* MapViewRepresentable.swift */; };
 		B001000000000005 /* MapViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000005 /* MapViewModelHost.swift */; };
 		B001000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000007 /* Assets.xcassets */; };
+		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B00100000000000B /* AppViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000D /* AppViewModelHost.swift */; };
 		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
-		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B001000000000011 /* ComposeHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000013 /* ComposeHostingView.swift */; };
+		B001000000000014 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000014 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		A00100000000000D /* AppViewModelHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModelHost.swift; sourceTree = "<group>"; };
 		A001000000000010 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		A001000000000013 /* ComposeHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposeHostingView.swift; sourceTree = "<group>"; };
+		A001000000000015 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A001000000000016 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,14 +84,6 @@
 			path = Map;
 			sourceTree = "<group>";
 		};
-		D001000000000009 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				A001000000000013 /* ComposeHostingView.swift */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
 		D001000000000005 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -99,9 +94,18 @@
 				D001000000000003 /* Map */,
 				D001000000000009 /* Shared */,
 				A001000000000007 /* Assets.xcassets */,
+				A001000000000014 /* Localizable.strings */,
 				A001000000000009 /* Info.plist */,
 			);
 			path = iosApp;
+			sourceTree = "<group>";
+		};
+		D001000000000009 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				A001000000000013 /* ComposeHostingView.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,6 +152,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"pt-BR",
 			);
 			mainGroup = D001000000000000;
 			productRefGroup = D001000000000001 /* Products */;
@@ -165,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B001000000000007 /* Assets.xcassets in Resources */,
+				B001000000000014 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,10 +228,22 @@
 				B00100000000000B /* AppViewModelHost.swift in Sources */,
 				B00100000000000E /* AppTheme.swift in Sources */,
 				B001000000000011 /* ComposeHostingView.swift in Sources */,
-				);
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A001000000000014 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A001000000000015 /* Base */,
+				A001000000000016 /* pt-BR */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		F001000000000010 /* Debug */ = {

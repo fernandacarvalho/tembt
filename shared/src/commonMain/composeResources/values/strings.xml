@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- Tabs -->
+    <string name="tab_court">Quadra</string>
+    <string name="tab_schedule">Lista</string>
+    <string name="tab_tournaments">Torneios</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_title">TEMBT</string>
+    <string name="welcome_subtitle">Para iniciar, insira seu nome</string>
+    <string name="welcome_name_placeholder">Seu nome</string>
+    <string name="welcome_button">COMEÇAR A USAR</string>
+
+    <!-- Permission Screen -->
+    <string name="permission_title">Acesso à localização</string>
+    <string name="permission_subtitle">Para visualizar a quantidade de jogadores na quadra em tempo real, habilite sua localização nas configurações do aparelho.</string>
+    <string name="permission_why_title">PORQUE PRECISAMOS DA PERMISSÃO?</string>
+    <string name="permission_why_body">Usamos a sua localização para calcular sua distância da quadra e informar o número de jogadores presentes. Todos em quadra são listados de forma anônima. Não divulgaremos onde você está.</string>
+    <string name="permission_how_title">COMO HABILITAR</string>
+    <string name="permission_how_prefix">Vá em </string>
+    <string name="permission_how_separator"> > </string>
+    <string name="permission_how_choose">\ne escolha a opção \"</string>
+    <string name="permission_how_suffix">\"</string>
+    <string name="permission_button">PERMITIR LOCALIZAÇÃO</string>
+
+    <!-- Schedule Screen -->
+    <string name="schedule_link_copied">Link copiado!</string>
+    <string name="schedule_error">Erro ao carregar</string>
+    <string name="schedule_title_prefix">Bora pro </string>
+    <string name="schedule_title_highlight">play</string>
+    <string name="schedule_title_suffix">?</string>
+    <string name="schedule_share">Compartilhar</string>
+    <string name="schedule_attendance_prefix">Lista de presença </string>
+    <string name="schedule_attendance_instructions">\nMarque o horário que pretende chegar\nna rede.</string>
+
+    <!-- Day names -->
+    <string name="day_monday">Segunda</string>
+    <string name="day_tuesday">Terça</string>
+    <string name="day_wednesday">Quarta</string>
+    <string name="day_thursday">Quinta</string>
+    <string name="day_friday">Sexta</string>
+    <string name="day_saturday">Sábado</string>
+    <string name="day_sunday">Domingo</string>
+
+    <!-- Tournament Screen -->
+    <string name="tournament_coming_soon">Torneios — em breve</string>
+
+    <!-- Map Screen (iOS Swift) -->
+    <string name="map_error">Erro ao carregar</string>
+    <string name="map_retry">Tentar novamente</string>
+    <string name="map_verifying_permission">Verificando permissão...</string>
+    <string name="map_players_count">%1$d jogadores no local agora</string>
+</resources>

@@ -7,7 +7,7 @@ import kotlinx.coroutines.CompletableDeferred
 class FakeWindowRepository : WindowRepository {
 
     private var windowResult: Result<ScheduleWindow> =
-        Result.success(ScheduleWindow("2026-03-17", emptyList()))
+        Result.success(ScheduleWindow("2026-03-17", startHour = 6, endHour = 16, slots = emptyList()))
     private var checkinResult: Result<Unit> = Result.success(Unit)
 
     var getWindowCallCount = 0

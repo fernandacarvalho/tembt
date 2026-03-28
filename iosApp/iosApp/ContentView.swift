@@ -53,15 +53,15 @@ private struct MainTabs: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             MapScreen()
-                .tabItem { Label("Quadra", systemImage: "map.fill") }
+                .tabItem { Label(String(localized: "tab_court"), systemImage: "map.fill") }
                 .tag(0)
             ComposeHostingView { ViewControllersKt.scheduleViewController() }
                 .ignoresSafeArea()
-                .tabItem { Label("Lista", systemImage: "list.bullet") }
+                .tabItem { Label(String(localized: "tab_schedule"), systemImage: "list.bullet") }
                 .tag(1)
             ComposeHostingView { ViewControllersKt.tournamentViewController() }
                 .ignoresSafeArea()
-                .tabItem { Label("Torneios", systemImage: "trophy.fill") }
+                .tabItem { Label(String(localized: "tab_tournaments"), systemImage: "trophy.fill") }
                 .tag(2)
         }
         .tint(Color.appPrimary)

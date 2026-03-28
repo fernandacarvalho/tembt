@@ -26,6 +26,8 @@ import com.tembt.android.ui.map.MapScreen
 import com.tembt.ui.schedule.ScheduleScreen
 import com.tembt.ui.tournament.TournamentScreen
 import com.tembt.ui.welcome.WelcomeScreen
+import androidx.compose.ui.res.stringResource
+import com.tembt.android.R
 import com.tembt.presentation.app.AppViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -62,21 +64,21 @@ private fun MainTabs(deepLinkTab: Int? = null) {
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
                     icon = { Icon(Icons.Default.Map, contentDescription = null) },
-                    label = { Text("Quadra") },
+                    label = { Text(stringResource(R.string.tab_court)) },
                     colors = itemColors
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
-                    label = { Text("Lista") },
+                    label = { Text(stringResource(R.string.tab_schedule)) },
                     colors = itemColors
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
                     icon = { Icon(Icons.Default.EmojiEvents, contentDescription = null) },
-                    label = { Text("Torneios") },
+                    label = { Text(stringResource(R.string.tab_tournaments)) },
                     colors = itemColors
                 )
             }

@@ -3,11 +3,13 @@ package com.tembt.di
 import com.tembt.data.remote.TembtApiService
 import com.tembt.data.remote.createHttpClient
 import com.tembt.data.repository.CourtRepositoryImpl
+import com.tembt.data.repository.LocationRepositoryImpl
 import com.tembt.data.repository.PlayerRepositoryImpl
 import com.tembt.data.repository.PlayersRepositoryImpl
 import com.tembt.data.repository.TournamentRepositoryImpl
 import com.tembt.data.repository.WindowRepositoryImpl
 import com.tembt.domain.repository.CourtRepository
+import com.tembt.domain.repository.LocationRepository
 import com.tembt.domain.repository.PlayerRepository
 import com.tembt.domain.repository.PlayersRepository
 import com.tembt.domain.repository.TournamentRepository
@@ -44,6 +46,7 @@ val appModule = module {
     single<PlayersRepository> { PlayersRepositoryImpl(get()) }
     single<WindowRepository> { WindowRepositoryImpl(get()) }
     single<TournamentRepository> { TournamentRepositoryImpl(get()) }
+    single<LocationRepository> { LocationRepositoryImpl(get()) }
 
     // Use cases — factory {} because they are stateless and cheap to recreate
     factory { RegisterPlayerUseCase(get(), get()) }
@@ -64,6 +67,7 @@ val appModule = module {
             sendLocation         = get(),
             locationService      = get(),
             courtRepository      = get(),
+            windowRepository     = get(),
             playerStorage        = get(),
             courtScheduleStorage = get()
         )

@@ -57,8 +57,24 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tembt.shared.generated.resources.Res
+import com.tembt.shared.generated.resources.day_friday
+import com.tembt.shared.generated.resources.day_monday
+import com.tembt.shared.generated.resources.day_saturday
+import com.tembt.shared.generated.resources.day_sunday
+import com.tembt.shared.generated.resources.day_thursday
+import com.tembt.shared.generated.resources.day_tuesday
+import com.tembt.shared.generated.resources.day_wednesday
+import com.tembt.shared.generated.resources.schedule_attendance_instructions
+import com.tembt.shared.generated.resources.schedule_attendance_prefix
 import com.tembt.shared.generated.resources.schedule_bg
+import com.tembt.shared.generated.resources.schedule_error
+import com.tembt.shared.generated.resources.schedule_link_copied
+import com.tembt.shared.generated.resources.schedule_share
+import com.tembt.shared.generated.resources.schedule_title_highlight
+import com.tembt.shared.generated.resources.schedule_title_prefix
+import com.tembt.shared.generated.resources.schedule_title_suffix
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import com.tembt.domain.model.ScheduleWindow
 import com.tembt.domain.model.SlotPlayer
 import com.tembt.domain.model.WindowSlot
@@ -95,13 +111,14 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val clipboard = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val linkCopiedMsg = stringResource(Res.string.schedule_link_copied)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is ScheduleUiEvent.CopyShareLink -> {
                     clipboard.setText(AnnotatedString(event.url))
-                    snackbarHostState.showSnackbar("Link copiado!")
+                    snackbarHostState.showSnackbar(linkCopiedMsg)
                 }
             }
         }
@@ -132,7 +149,7 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = koinViewModel()) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text("Erro ao carregar", color = TEXT_PRIMARY, fontSize = 18.sp)
+                    Text(stringResource(Res.string.schedule_error), color = TEXT_PRIMARY, fontSize = 18.sp)
                     Spacer(Modifier.height(8.dp))
                     Text(state.message, color = TEXT_SECONDARY, fontSize = 14.sp)
                 }
@@ -202,7 +219,7 @@ private fun PollContent(
 
 @Composable
 private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Modifier = Modifier) {
-    val formattedDate = remember(window.date) { formatPollDate(window.date) }
+    val formattedDate = formatPollDate(window.date)
     // Each Text gets its own single-font FontFamily so CMP resolves the correct
     // file without ambiguity (multi-weight FontFamily resolution is unreliable on iOS).
     val boldFont  = condensedBoldFontFamily()
@@ -218,7 +235,7 @@ private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Mo
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "Bora pro ",
+                    text = stringResource(Res.string.schedule_title_prefix),
                     fontFamily = boldFont,
                     color = BRAND_RED,
                     fontSize = 32.sp,
@@ -226,7 +243,7 @@ private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Mo
                     modifier = Modifier.alignByBaseline()
                 )
                 Text(
-                    text = "play",
+                    text = stringResource(Res.string.schedule_title_highlight),
                     fontFamily = blackFont,
                     color = BRAND_RED,
                     fontSize = 33.sp,
@@ -234,7 +251,7 @@ private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Mo
                     modifier = Modifier.alignByBaseline()
                 )
                  Text(
-                    text = "?",
+                    text = stringResource(Res.string.schedule_title_suffix),
                     fontFamily = boldFont,
                     color = BRAND_RED,
                     fontSize = 32.sp,
@@ -253,7 +270,7 @@ private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Mo
             ) {
                 Icon(
                     imageVector = Icons.Outlined.IosShare,
-                    contentDescription = "Compartilhar",
+                    contentDescription = stringResource(Res.string.schedule_share),
                     tint = Color.White,
                     modifier = Modifier.size(20.dp)
                 )
@@ -264,9 +281,9 @@ private fun PollHeader(window: ScheduleWindow, onShare: () -> Unit, modifier: Mo
 
         Text(
             text = buildAnnotatedString {
-                append("Lista de presença ")
+                append(stringResource(Res.string.schedule_attendance_prefix))
                 withStyle(SpanStyle(fontWeight = FontWeight.Medium)) { append(formattedDate) }
-                append("\nMarque o horário que pretende chegar\nna rede.")
+                append(stringResource(Res.string.schedule_attendance_instructions))
             },
             color = TEXT_PRIMARY,
             fontSize = 15.sp,
@@ -386,23 +403,24 @@ private fun playerInitials(name: String): String {
     return first?.toString() ?: "?"
 }
 
+@Composable
 private fun formatPollDate(date: String): String {
+    val dayNames = mapOf(
+        DayOfWeek.MONDAY to stringResource(Res.string.day_monday),
+        DayOfWeek.TUESDAY to stringResource(Res.string.day_tuesday),
+        DayOfWeek.WEDNESDAY to stringResource(Res.string.day_wednesday),
+        DayOfWeek.THURSDAY to stringResource(Res.string.day_thursday),
+        DayOfWeek.FRIDAY to stringResource(Res.string.day_friday),
+        DayOfWeek.SATURDAY to stringResource(Res.string.day_saturday),
+        DayOfWeek.SUNDAY to stringResource(Res.string.day_sunday),
+    )
     return try {
         val local = LocalDate.parse(date)
         val day = local.dayOfMonth
         val month = local.monthNumber
-        val dayName = when (local.dayOfWeek) {
-            DayOfWeek.MONDAY    -> "Segunda"
-            DayOfWeek.TUESDAY   -> "Terça"
-            DayOfWeek.WEDNESDAY -> "Quarta"
-            DayOfWeek.THURSDAY  -> "Quinta"
-            DayOfWeek.FRIDAY    -> "Sexta"
-            DayOfWeek.SATURDAY  -> "Sábado"
-            DayOfWeek.SUNDAY    -> "Domingo"
-        }
+        val dayName = dayNames[local.dayOfWeek] ?: ""
         "$dayName ${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}"
     } catch (e: Exception) {
-        // Return original date string if parsing fails
         date
     }
 }

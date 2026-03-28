@@ -22,14 +22,14 @@ class GetTournamentsUseCaseTest {
     // --- City ---
 
     @Test
-    fun `given no city, default city Rio de Janeiro is forwarded to repository`() = runTest {
+    fun `given no city default city Rio de Janeiro is forwarded to repository`() = runTest {
         useCase(city = null)
 
         assertEquals(GetTournamentsUseCase.DEFAULT_CITY, repo.lastCity)
     }
 
     @Test
-    fun `given a city, it is forwarded to repository`() = runTest {
+    fun `given a city it is forwarded to repository`() = runTest {
         useCase(city = "Niterói")
 
         assertEquals("Niterói", repo.lastCity)

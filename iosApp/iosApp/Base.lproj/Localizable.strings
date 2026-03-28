@@ -1,0 +1,10 @@
+/* Tabs */
+"tab_court" = "Quadra";
+"tab_schedule" = "Lista";
+"tab_tournaments" = "Torneios";
+
+/* Map Screen */
+"map_error" = "Erro ao carregar";
+"map_retry" = "Tentar novamente";
+"map_verifying_permission" = "Verificando permissão...";
+"map_players_count" = "%d jogadores no local agora";

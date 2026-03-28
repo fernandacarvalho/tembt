@@ -35,6 +35,8 @@ class ScheduleViewModelTest {
 
     private val defaultWindow = ScheduleWindow(
         date = "2026-03-17",
+        startHour = 6,
+        endHour = 16,
         slots = listOf(
             WindowSlot(time = "08:00", players = emptyList()),
             WindowSlot(time = "10:00", players = emptyList())
@@ -237,6 +239,8 @@ class ScheduleViewModelTest {
         runTest(testDispatcher) {
             val window = ScheduleWindow(
                 date = "2026-03-17",
+                startHour = 6,
+                endHour = 16,
                 slots = listOf(
                     WindowSlot(
                         time = "08:00",

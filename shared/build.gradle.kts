@@ -76,6 +76,7 @@ kotlin {
 }
 
 compose.resources {
+    publicResClass = true
     packageOfResClass = "com.tembt.shared.generated.resources"
 }
 
