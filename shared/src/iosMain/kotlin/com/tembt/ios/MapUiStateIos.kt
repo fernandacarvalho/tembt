@@ -43,7 +43,7 @@ class MapUiStateIos(
                 center = state.center,
                 courtName = state.courtName,
                 error = null,
-                players = state.players.map { PlayerIos(it.uuid, it.name, it.lat, it.lng) }
+                players = state.players.map { PlayerIos(it.name, it.lat, it.lng) }
             )
             is MapUiState.Error -> MapUiStateIos(
                 isLoading = false,

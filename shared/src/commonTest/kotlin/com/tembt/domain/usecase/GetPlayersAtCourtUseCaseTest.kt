@@ -14,7 +14,7 @@ class GetPlayersAtCourtUseCaseTest {
 
     @Test
     fun `given repository succeeds returns player list`() = runTest {
-        val players = listOf(Player("uuid-1", "Alice", -22.9, -43.1))
+        val players = listOf(Player("Alice", -22.9, -43.1))
         playersRepo.willReturn(Result.success(players))
 
         val result = useCase()

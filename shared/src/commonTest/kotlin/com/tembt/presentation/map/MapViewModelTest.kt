@@ -105,8 +105,8 @@ class MapViewModelTest {
         runTest(testDispatcher) {
             val center = MapCoordinates(latitude =-23.0, longitude =-46.0)
             val players = listOf(
-                Player(uuid = "p1", name = "Alice", lat = -23.0, lng = -46.0),
-                Player(uuid = "p2", name = "Bob", lat = -23.1, lng = -46.1)
+                Player(name = "Alice", lat = -23.0, lng = -46.0),
+                Player(name = "Bob", lat = -23.1, lng = -46.1)
             )
             locationService.stubbedStatus = LocationPermissionStatus.GRANTED
             courtRepo.willReturn(Result.success(center))
@@ -214,7 +214,7 @@ class MapViewModelTest {
             advanceUntilIdle()
             assertIs<MapUiState.MapReady>(vm.uiState.value)
 
-            val updatedPlayers = listOf(Player("p1", "Alice", -23.0, -46.0))
+            val updatedPlayers = listOf(Player("Alice", -23.0, -46.0))
             playersRepo.willReturn(Result.success(updatedPlayers))
 
             vm.refreshPlayers()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">tembt</string>
+    <string name="app_name">TemBT</string>
     <string name="tab_court">Quadra</string>
     <string name="tab_schedule">Lista</string>
     <string name="tab_tournaments">Torneios</string>

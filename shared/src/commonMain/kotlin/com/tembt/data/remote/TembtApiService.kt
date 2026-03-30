@@ -45,7 +45,7 @@ class TembtApiService(private val client: HttpClient) {
 
     suspend fun getPlayers(): Result<List<Player>> = runCatching {
         client.get("$BASE_URL/players").body<List<PlayerResponse>>().map {
-            Player(uuid = it.uuid, name = it.name, lat = it.lat, lng = it.lng)
+            Player(name = it.name, lat = it.lat, lng = it.lng)
         }
     }
 

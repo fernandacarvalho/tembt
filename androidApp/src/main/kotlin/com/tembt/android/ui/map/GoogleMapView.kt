@@ -1,10 +1,14 @@
 package com.tembt.android.ui.map
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.Composable
+import androidx.core.graphics.drawable.DrawableCompat
+import com.tembt.android.R
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -115,7 +119,7 @@ fun MapLibreView(center: MapCoordinates, players: List<Player>, recenterTrigger:
                     mapRef.value = map
                     map.setStyle(MAP_STYLE) { style ->
                         setupCourtCircle(style, center)
-                        setupPlayerLayers(style, players)
+                        setupPlayerLayers(style, players, context)
                     }
                     map.moveCamera(
                         org.maplibre.android.camera.CameraUpdateFactory.newCameraPosition(
@@ -151,7 +155,7 @@ fun MapLibreView(center: MapCoordinates, players: List<Player>, recenterTrigger:
     )
 }
 
-private fun setupPlayerLayers(style: org.maplibre.android.maps.Style, players: List<Player>) {
+private fun setupPlayerLayers(style: org.maplibre.android.maps.Style, players: List<Player>, context: Context) {
     // Clustering GeoJSON source — MapLibre merges nearby features automatically
     val source = GeoJsonSource(
         SOURCE_ID,
@@ -186,8 +190,8 @@ private fun setupPlayerLayers(style: org.maplibre.android.maps.Style, players: L
         )
     })
 
-    // Individual player pin — custom bitmap icon (figure.tennis equivalent)
-    style.addImage(PLAYER_MARKER_IMAGE, createPlayerMarkerBitmap())
+    // Individual player pin — sports_tennis Material icon rendered as bitmap for MapLibre
+    style.addImage(PLAYER_MARKER_IMAGE, createPlayerMarkerBitmap(context))
     style.addLayer(SymbolLayer(LAYER_PLAYER_PIN, SOURCE_ID).apply {
         setFilter(not(has("point_count")))
         setProperties(
@@ -232,45 +236,32 @@ private fun circlePolygon(lat: Double, lng: Double, radiusMeters: Double): Polyg
 }
 
 /**
- * Draws a stick figure playing tennis on an orange circle — equivalent to figure.tennis.circle.fill.
+ * Renders the Material Design sports_tennis icon (ic_player_pin.xml) on an orange circle.
  * The bitmap is registered once in the MapLibre style and reused for all player pins.
  */
-private fun createPlayerMarkerBitmap(): Bitmap {
-    val size = 96
-    val cx = size / 2f
+private fun createPlayerMarkerBitmap(context: Context): Bitmap {
+    val size = 48
+    val iconSize = 36
+    val iconOffset = (size - iconSize) / 2
+
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
-    // Background circle — Spicy Paprika #DB5316 with Alabaster Grey border
+    // Background circle
     val bg = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#DB5316") }
+    val cx = size / 2f
     canvas.drawCircle(cx, cx, cx - 2f, bg)
     val border = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#E7E7E7"); style = Paint.Style.STROKE; strokeWidth = 3f
     }
     canvas.drawCircle(cx, cx, cx - 2f, border)
 
-    // Figure: white stroke
-    val fig = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE; style = Paint.Style.STROKE
-        strokeWidth = 4.5f; strokeCap = Paint.Cap.ROUND
-    }
-    // Head
-    canvas.drawCircle(cx + 3f, 19f, 7f, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE })
-    // Body (slightly leaning forward)
-    canvas.drawLine(cx, 26f, cx - 5f, 56f, fig)
-    // Left arm raised → racket side
-    canvas.drawLine(cx, 34f, 18f, 20f, fig)
-    // Right arm back
-    canvas.drawLine(cx, 34f, 70f, 42f, fig)
-    // Left leg forward
-    canvas.drawLine(cx - 5f, 56f, 20f, 78f, fig)
-    // Right leg back
-    canvas.drawLine(cx - 5f, 56f, 56f, 78f, fig)
-    // Racket (small oval at end of left arm)
-    val racket = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE; style = Paint.Style.STROKE; strokeWidth = 3f
-    }
-    canvas.drawOval(6f, 6f, 24f, 20f, racket)
+    // Sports tennis icon from drawable resource
+    val drawable = AppCompatResources.getDrawable(context, R.drawable.ic_player_pin)!!
+    val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
+    DrawableCompat.setTint(wrappedDrawable, Color.WHITE)
+    wrappedDrawable.setBounds(iconOffset, iconOffset, iconOffset + iconSize, iconOffset + iconSize)
+    wrappedDrawable.draw(canvas)
 
     return bitmap
 }
