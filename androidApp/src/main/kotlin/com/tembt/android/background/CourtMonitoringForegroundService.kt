@@ -57,8 +57,8 @@ class CourtMonitoringForegroundService : Service() {
                 val now   = Clock.System.now().toLocalDateTime(saoPaulo)
                 val today = now.date
 
-                // Stop when the operating window has closed
-                if (now.hour >= schedule.endHour) break
+                // TODO: re-enable before production
+                // if (now.hour >= schedule.endHour) break
 
                 val interval = coordinator.runCycle(today)
                 if (interval == null) break  // paused by user or court closed today

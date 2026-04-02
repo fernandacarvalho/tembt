@@ -7,6 +7,7 @@ import com.tembt.domain.model.Player
 sealed class MapUiState {
     data object Loading : MapUiState()
     data class PermissionRequired(val status: LocationPermissionStatus) : MapUiState()
+    data object BackgroundPermissionRequired : MapUiState()
     data class MapReady(
         val center: MapCoordinates,
         val courtName: String = "",

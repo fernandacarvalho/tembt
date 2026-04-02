@@ -3,8 +3,8 @@ package com.tembt.presentation.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tembt.domain.model.LocationPermissionStatus
-import com.tembt.domain.usecase.GetCourtLocationUseCase
-import com.tembt.domain.usecase.GetPlayersAtCourtUseCase
+import com.tembt.domain.usecase.GetCourtLocation
+import com.tembt.domain.usecase.GetPlayersAtCourt
 import com.tembt.domain.usecase.SendLocation
 import com.tembt.platform.LocationServiceContract
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 // `org.jetbrains.androidx.lifecycle:lifecycle-viewmodel` — this is not an Android import leak.
 class MapViewModel(
     private val locationService: LocationServiceContract,
-    private val getCourtLocation: GetCourtLocationUseCase,
-    private val getPlayersAtCourt: GetPlayersAtCourtUseCase,
+    private val getCourtLocation: GetCourtLocation,
+    private val getPlayersAtCourt: GetPlayersAtCourt,
     private val sendLocationUseCase: SendLocation
 ) : ViewModel() {
 
@@ -52,8 +52,13 @@ class MapViewModel(
     fun checkPermission() {
         when (locationService.getPermissionStatus()) {
             LocationPermissionStatus.GRANTED -> {
-                if (_uiState.value is MapUiState.MapReady) return
-                fetchCourtAndShowMap()
+                val bgGranted = locationService.getBackgroundPermissionStatus() == LocationPermissionStatus.GRANTED
+                if (bgGranted) {
+                    if (_uiState.value is MapUiState.MapReady) return
+                    fetchCourtAndShowMap()
+                } else {
+                    _uiState.value = MapUiState.BackgroundPermissionRequired
+                }
             }
             LocationPermissionStatus.DENIED ->
                 _uiState.value = MapUiState.PermissionRequired(LocationPermissionStatus.DENIED)

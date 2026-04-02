@@ -16,6 +16,18 @@ struct MapScreen: View {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
+            } else if host.uiState.isBackgroundPermissionRequired {
+                ComposeHostingView {
+                    ViewControllersKt.backgroundPermissionViewController(
+                        onOpenSettings: {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        }
+                    )
+                }
+                .ignoresSafeArea()
+
             } else if host.uiState.isPermissionRequired {
                 ZStack {
                     ComposeHostingView {

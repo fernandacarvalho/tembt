@@ -6,6 +6,8 @@ import com.tembt.domain.model.LocationPermissionStatus
 // not the concrete expect class. Both actual implementations must implement this.
 interface LocationServiceContract {
     fun getPermissionStatus(): LocationPermissionStatus
+    /** Returns GRANTED only when background ("always") access is allowed. */
+    fun getBackgroundPermissionStatus(): LocationPermissionStatus
     fun markPermissionRequested()
     /** Returns the most recently cached device coordinates, or null if unavailable. */
     fun getCurrentLocation(): Pair<Double, Double>?

@@ -1,6 +1,7 @@
 package com.tembt.ui
 
 import androidx.compose.ui.window.ComposeUIViewController
+import com.tembt.ui.permission.PermissionMode
 import com.tembt.ui.permission.PermissionScreen
 import com.tembt.ui.schedule.ScheduleScreen
 import com.tembt.ui.theme.TembtTheme
@@ -29,7 +30,18 @@ fun permissionViewController(
     ComposeUIViewController {
         TembtTheme {
             PermissionScreen(
+                mode = PermissionMode.ForegroundRequired,
                 onRequestPermission = onRequestPermission
+            )
+        }
+    }
+
+fun backgroundPermissionViewController(onOpenSettings: () -> Unit): UIViewController =
+    ComposeUIViewController {
+        TembtTheme {
+            PermissionScreen(
+                mode = PermissionMode.BackgroundRequired,
+                onRequestPermission = onOpenSettings
             )
         }
     }

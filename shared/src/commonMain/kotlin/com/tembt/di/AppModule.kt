@@ -17,8 +17,10 @@ import com.tembt.domain.repository.WindowRepository
 import com.tembt.domain.usecase.CalculateDistanceUseCase
 import com.tembt.domain.usecase.GetTournamentsUseCase
 import com.tembt.domain.usecase.CheckinUseCase
+import com.tembt.domain.usecase.GetCourtLocation
 import com.tembt.domain.usecase.GetCourtLocationUseCase
 import com.tembt.domain.usecase.GetLocationUpdateIntervalUseCase
+import com.tembt.domain.usecase.GetPlayersAtCourt
 import com.tembt.domain.usecase.GetPlayersAtCourtUseCase
 import com.tembt.domain.usecase.GetWindowUseCase
 import com.tembt.domain.usecase.IsCourtOpenUseCase
@@ -50,8 +52,8 @@ val appModule = module {
 
     // Use cases — factory {} because they are stateless and cheap to recreate
     factory { RegisterPlayerUseCase(get(), get()) }
-    factory { GetCourtLocationUseCase(get()) }
-    factory { GetPlayersAtCourtUseCase(get()) }
+    factory<GetCourtLocation> { GetCourtLocationUseCase(get()) }
+    factory<GetPlayersAtCourt> { GetPlayersAtCourtUseCase(get()) }
     factory<SendLocation> { SendLocationUseCase(get(), get(), get()) }
     factory { GetWindowUseCase(get()) }
     factory { CheckinUseCase(get()) }

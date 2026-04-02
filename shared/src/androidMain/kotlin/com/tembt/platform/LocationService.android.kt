@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
 import androidx.core.content.ContextCompat
 import com.tembt.domain.model.LocationPermissionStatus
 
@@ -29,6 +30,16 @@ actual class LocationService(private val context: Context) : LocationServiceCont
             !prefs.getBoolean(KEY_LOCATION_ASKED, false) -> LocationPermissionStatus.NOT_DETERMINED
             else -> LocationPermissionStatus.DENIED
         }
+    }
+
+    actual override fun getBackgroundPermissionStatus(): LocationPermissionStatus {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            return getPermissionStatus()
+        }
+        val granted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        return if (granted) LocationPermissionStatus.GRANTED else LocationPermissionStatus.DENIED
     }
 
     actual override fun markPermissionRequested() {

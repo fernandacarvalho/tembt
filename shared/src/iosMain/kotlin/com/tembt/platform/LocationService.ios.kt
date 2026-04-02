@@ -28,6 +28,15 @@ actual class LocationService : LocationServiceContract {
         }
     }
 
+    actual override fun getBackgroundPermissionStatus(): LocationPermissionStatus {
+        return when (locationManager.authorizationStatus) {
+            kCLAuthorizationStatusAuthorizedAlways -> LocationPermissionStatus.GRANTED
+            kCLAuthorizationStatusDenied,
+            kCLAuthorizationStatusRestricted -> LocationPermissionStatus.DENIED
+            else -> LocationPermissionStatus.NOT_DETERMINED
+        }
+    }
+
     // iOS derives this from CLLocationManager.authorizationStatus; no extra tracking needed.
     actual override fun markPermissionRequested() = Unit
 

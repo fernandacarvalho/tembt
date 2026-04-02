@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
@@ -25,6 +29,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tembt.shared.generated.resources.Res
+import com.tembt.shared.generated.resources.bg_permission_button
+import com.tembt.shared.generated.resources.bg_permission_subtitle
+import com.tembt.shared.generated.resources.bg_permission_title
+import com.tembt.shared.generated.resources.bg_permission_why_body
 import com.tembt.shared.generated.resources.permission_button
 import com.tembt.shared.generated.resources.permission_how_choose
 import com.tembt.shared.generated.resources.permission_how_prefix
@@ -45,11 +53,35 @@ import com.tembt.ui.theme.condensedBoldFontFamily
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@Stable
+sealed class PermissionMode {
+    object ForegroundRequired : PermissionMode()
+    object BackgroundRequired : PermissionMode()
+}
+
 @Composable
 fun PermissionScreen(
+    mode: PermissionMode,
     onRequestPermission: () -> Unit
 ) {
     val boldFont = condensedBoldFontFamily()
+
+    val title = when (mode) {
+        PermissionMode.BackgroundRequired -> stringResource(Res.string.bg_permission_title)
+        PermissionMode.ForegroundRequired -> stringResource(Res.string.permission_title)
+    }
+    val subtitle = when (mode) {
+        PermissionMode.BackgroundRequired -> stringResource(Res.string.bg_permission_subtitle)
+        PermissionMode.ForegroundRequired -> stringResource(Res.string.permission_subtitle)
+    }
+    val whyBody = when (mode) {
+        PermissionMode.ForegroundRequired -> stringResource(Res.string.permission_why_body)
+        PermissionMode.BackgroundRequired -> stringResource(Res.string.bg_permission_why_body)
+    }
+    val buttonText = when (mode) {
+        PermissionMode.BackgroundRequired -> stringResource(Res.string.bg_permission_button)
+        PermissionMode.ForegroundRequired -> stringResource(Res.string.permission_button)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -59,16 +91,17 @@ fun PermissionScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Header (fixed) + card (fills remaining height, scrollable inside)
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
                     .padding(horizontal = 28.dp)
-                    .padding(top = 24.dp)
+                    .padding(top = 24.dp, bottom = 32.dp)
             ) {
                 Text(
-                    text = stringResource(Res.string.permission_title),
+                    text = title,
                     fontFamily = boldFont,
                     fontSize = 36.sp,
                     lineHeight = 42.sp,
@@ -78,7 +111,7 @@ fun PermissionScreen(
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = stringResource(Res.string.permission_subtitle),
+                    text = subtitle,
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight.Normal,
@@ -86,8 +119,9 @@ fun PermissionScreen(
                 )
             }
 
-            Spacer(Modifier.height(32.dp))
-
+            // Card stretches to fill remaining screen height (including behind tab bar).
+            // Horizontal padding creates lateral margins; weight(1f) fills to the bottom.
+            // verticalScroll keeps content accessible on small screens.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,13 +129,14 @@ fun PermissionScreen(
                     .padding(horizontal = 24.dp)
                     .shadow(
                         elevation = 8.dp,
-                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                        shape = RoundedCornerShape(24.dp),
                         clip = false
                     )
                     .background(
                         color = AlabasterGrey,
-                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                        shape = RoundedCornerShape(24.dp)
                     )
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp)
                     .padding(top = 28.dp)
                     .navigationBarsPadding()
@@ -109,7 +144,7 @@ fun PermissionScreen(
             ) {
                 PermissionCardSection(
                     title = stringResource(Res.string.permission_why_title),
-                    message = stringResource(Res.string.permission_why_body)
+                    message = whyBody
                 )
 
                 Spacer(Modifier.height(24.dp))
@@ -128,8 +163,8 @@ fun PermissionScreen(
                 val howSeparator = stringResource(Res.string.permission_how_separator)
                 val howChoose = stringResource(Res.string.permission_how_choose)
                 val howSuffix = stringResource(Res.string.permission_how_suffix)
-                Text(
-                    text = buildAnnotatedString {
+                val howText = remember(howPrefix, howSeparator, howChoose, howSuffix) {
+                    buildAnnotatedString {
                         append(howPrefix)
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsAppName) }
                         append(howSeparator)
@@ -140,7 +175,10 @@ fun PermissionScreen(
                         append(howChoose)
                         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(settingsOption) }
                         append(howSuffix)
-                    },
+                    }
+                }
+                Text(
+                    text = howText,
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
                     color = PitchBlack
@@ -149,7 +187,7 @@ fun PermissionScreen(
                 Spacer(Modifier.height(50.dp))
 
                 TembtButton(
-                    title = stringResource(Res.string.permission_button),
+                    title = buttonText,
                     onClick = onRequestPermission,
                     style = TembtButtonStyle.SolidInverted,
                     modifier = Modifier.shadow(
@@ -168,7 +206,6 @@ fun PermissionScreen(
 private fun PermissionCardSection(title: String, message: String) {
     val boldFont = condensedBoldFontFamily()
 
-    // 5. Larger card section titles
     Column {
         Text(
             text = title,

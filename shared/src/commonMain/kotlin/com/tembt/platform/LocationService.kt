@@ -8,6 +8,9 @@ import com.tembt.domain.model.LocationPermissionStatus
 expect class LocationService {
     fun getPermissionStatus(): LocationPermissionStatus
 
+    /** Returns GRANTED only when background ("always") access is allowed. */
+    fun getBackgroundPermissionStatus(): LocationPermissionStatus
+
     // Called by the platform UI layer right before launching the system permission dialog,
     // so subsequent getPermissionStatus() calls can distinguish NOT_DETERMINED from DENIED.
     fun markPermissionRequested()

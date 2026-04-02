@@ -23,6 +23,12 @@
     <string name="permission_how_suffix">\"</string>
     <string name="permission_button">PERMITIR LOCALIZAÇÃO</string>
 
+    <!-- Background Permission Screen -->
+    <string name="bg_permission_title">Localização em segundo plano</string>
+    <string name="bg_permission_subtitle">Para registrar sua presença na quadra automaticamente, precisamos acessar sua localização mesmo com o app fechado.</string>
+    <string name="bg_permission_why_body">O monitoramento automático detecta quando você está na quadra durante o horário de jogo — sem precisar abrir o app. Os dados são anônimos e usados apenas para contar jogadores em quadra.</string>
+    <string name="bg_permission_button">IR PARA CONFIGURAÇÕES</string>
+
     <!-- Schedule Screen -->
     <string name="schedule_link_copied">Link copiado!</string>
     <string name="schedule_error">Erro ao carregar</string>

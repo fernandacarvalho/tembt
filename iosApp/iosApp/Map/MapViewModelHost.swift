@@ -10,6 +10,7 @@ final class MapViewModelHost: ObservableObject {
     @Published private(set) var uiState = MapUiStateIos(
         isLoading: true,
         isPermissionRequired: false,
+        isBackgroundPermissionRequired: false,
         isDenied: false,
         center: nil,
         courtName: "",

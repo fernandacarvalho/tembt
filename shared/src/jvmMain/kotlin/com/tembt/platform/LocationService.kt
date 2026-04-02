@@ -6,6 +6,7 @@ import com.tembt.domain.model.LocationPermissionStatus
 // Tests inject FakeLocationService directly; this class is never instantiated in tests.
 actual class LocationService : LocationServiceContract {
     actual override fun getPermissionStatus() = LocationPermissionStatus.NOT_DETERMINED
+    actual override fun getBackgroundPermissionStatus() = LocationPermissionStatus.NOT_DETERMINED
     actual override fun markPermissionRequested() = Unit
     actual override fun getCurrentLocation(): Pair<Double, Double>? = null
 }

@@ -42,6 +42,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.tembt.ui.permission.PermissionMode
 import com.tembt.ui.permission.PermissionScreen
 import com.tembt.presentation.map.MapUiEvent
 import com.tembt.presentation.map.MapUiState
@@ -97,6 +98,7 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
 
         is MapUiState.PermissionRequired -> {
             PermissionScreen(
+                mode = PermissionMode.ForegroundRequired,
                 onRequestPermission = {
                     permissionLauncher.launch(
                         arrayOf(
@@ -105,6 +107,13 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
                         )
                     )
                 }
+            )
+        }
+
+        is MapUiState.BackgroundPermissionRequired -> {
+            PermissionScreen(
+                mode = PermissionMode.BackgroundRequired,
+                onRequestPermission = { viewModel.onOpenSettingsRequested() }
             )
         }
 

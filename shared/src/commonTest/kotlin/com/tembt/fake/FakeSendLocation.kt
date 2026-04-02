@@ -5,7 +5,11 @@ import com.tembt.domain.usecase.SendLocation
 class FakeSendLocation : SendLocation {
 
     var callCount = 0
-    var result: Result<Unit> = Result.success(Unit)
+    private var result: Result<Unit> = Result.success(Unit)
+
+    fun willReturn(result: Result<Unit>) {
+        this.result = result
+    }
 
     override suspend fun invoke(): Result<Unit> {
         callCount++
