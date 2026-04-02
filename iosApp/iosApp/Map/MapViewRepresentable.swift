@@ -59,14 +59,16 @@ struct MapViewRepresentable: UIViewRepresentable {
             longitudinalMeters: radiusMeters * 2
         )
         mapView.setRegion(region, animated: animated)
-        mapView.setCameraBoundary(
-            MKMapView.CameraBoundary(coordinateRegion: region),
-            animated: false
-        )
-        mapView.setCameraZoomRange(
-            MKMapView.CameraZoomRange(maxCenterCoordinateDistance: radiusMeters * 2),
-            animated: false
-        )
+        if #available(iOS 16, *) {
+            mapView.setCameraBoundary(
+                MKMapView.CameraBoundary(coordinateRegion: region),
+                animated: false
+            )
+            mapView.setCameraZoomRange(
+                MKMapView.CameraZoomRange(maxCenterCoordinateDistance: radiusMeters * 2),
+                animated: false
+            )
+        }
     }
 
     private func addCourtCircle(_ mapView: MKMapView) {

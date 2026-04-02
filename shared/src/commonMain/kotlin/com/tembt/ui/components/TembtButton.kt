@@ -10,7 +10,12 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -82,12 +87,21 @@ fun TembtButton(
                 color = contentColor
             )
         } else {
+            var fontSize by remember(title) { mutableStateOf(14.sp) }
             Text(
                 text = title,
-                fontSize = 14.sp,
+                fontSize = fontSize,
                 fontWeight = FontWeight.Black,
                 fontFamily = fontFamily,
-                letterSpacing = 2.sp
+                letterSpacing = 2.sp,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Visible,
+                onTextLayout = { result ->
+                    if (result.hasVisualOverflow) {
+                        fontSize *= 0.9f
+                    }
+                }
             )
         }
     }

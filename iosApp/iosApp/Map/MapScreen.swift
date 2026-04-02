@@ -180,7 +180,7 @@ final class LocationPermissionRequester: NSObject, ObservableObject, CLLocationM
                 UIApplication.shared.open(url)
             }
         } else {
-            manager.requestWhenInUseAuthorization()
+            manager.requestAlwaysAuthorization()
         }
     }
 
