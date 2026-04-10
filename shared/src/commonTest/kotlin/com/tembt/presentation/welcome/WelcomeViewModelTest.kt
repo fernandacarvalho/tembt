@@ -45,9 +45,14 @@ class WelcomeViewModelTest {
     @Test
     fun `given empty name when onStartClicked state remains Idle`() =
         runTest(testDispatcher) {
+            // Arrange
             val vm = createViewModel()
+
+            // Act
             vm.onStartClicked("")
             advanceUntilIdle()
+
+            // Assert
             assertIs<WelcomeUiState.Idle>(vm.uiState.value)
             assertEquals(0, playerRepo.callCount)
         }
@@ -55,9 +60,14 @@ class WelcomeViewModelTest {
     @Test
     fun `given blank name when onStartClicked state remains Idle`() =
         runTest(testDispatcher) {
+            // Arrange
             val vm = createViewModel()
+
+            // Act
             vm.onStartClicked("   ")
             advanceUntilIdle()
+
+            // Assert
             assertIs<WelcomeUiState.Idle>(vm.uiState.value)
             assertEquals(0, playerRepo.callCount)
         }
@@ -90,19 +100,18 @@ class WelcomeViewModelTest {
         }
 
     @Test
-    fun `given valid name and registration succeeds state returns to Idle after navigation`() =
+    fun `given valid name and registration succeeds state remains Loading while navigation event is emitted`() =
         runTest(testDispatcher) {
+            // Arrange
             playerRepo.willReturn(Result.success(Unit))
             val vm = createViewModel()
 
+            // Act
             vm.onStartClicked("Alice")
             advanceUntilIdle()
 
-            // State stays at Loading until the event triggers navigation; Idle is the pre-loading baseline.
-            // After success the ViewModel emits the event and doesn't reset state — UI navigates away.
-            // We verify no Error state was set.
-            val state = vm.uiState.value
-            assertIs<WelcomeUiState.Loading>(state) // still Loading — nav event triggers the transition
+            // Assert — VM emits the navigation event and does not reset state; UI navigates away
+            assertIs<WelcomeUiState.Loading>(vm.uiState.value)
         }
 
     // --- Error path ---
@@ -131,6 +140,26 @@ class WelcomeViewModelTest {
 
             val state = assertIs<WelcomeUiState.Error>(vm.uiState.value)
             assertEquals("Erro ao registrar. Tente novamente.", state.message)
+        }
+
+    @Test
+    fun `given state is Error when onStartClicked called registration is attempted again`() =
+        runTest(testDispatcher) {
+            // Arrange — first attempt fails, leaves state in Error
+            playerRepo.willReturn(Result.failure(RuntimeException("Server error")))
+            val vm = createViewModel()
+            vm.onStartClicked("Alice")
+            advanceUntilIdle()
+            assertIs<WelcomeUiState.Error>(vm.uiState.value)
+            val callsAfterFirstAttempt = playerRepo.callCount
+
+            // Act — second attempt from Error state (guard only blocks Loading, not Error)
+            playerRepo.willReturn(Result.success(Unit))
+            vm.onStartClicked("Alice")
+            advanceUntilIdle()
+
+            // Assert — repository was called again (not blocked by guard)
+            assertEquals(callsAfterFirstAttempt + 1, playerRepo.callCount)
         }
 
     // --- Debounce (double-tap prevention) ---

@@ -43,23 +43,50 @@ class LocationMonitoringCoordinator(
      * @return The interval to wait before the next call, or null to stop monitoring.
      */
     suspend fun runCycle(today: LocalDate): LocationUpdateInterval? {
-        if (courtScheduleStorage.isMonitoringPausedFor(today)) return null
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: iniciando ciclo para $today")
 
-        val window = windowRepository.getWindow().getOrNull() ?: return null
-        if (!isCourtOpen(today, window.date)) return null
+        if (courtScheduleStorage.isMonitoringPausedFor(today)) {
+            println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: monitoramento pausado para hoje, saindo")
+            return null
+        }
+
+        val window = windowRepository.getWindow().getOrNull() ?: run {
+            println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: ERRO ao buscar janela de horário, saindo")
+            return null
+        }
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: janela = ${window.startHour}–${window.endHour} data=${window.date}")
+
+        if (!isCourtOpen(today, window.date)) {
+            println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: quadra fechada hoje, saindo")
+            return null
+        }
 
         courtScheduleStorage.saveSchedule(CourtSchedule(window.startHour, window.endHour))
 
-        val courtCoords = courtRepository.getCourtLocation().getOrNull() ?: return null
-        val (userLat, userLng) = locationService.getCurrentLocation() ?: return LocationUpdateInterval.FAR
+        val courtCoords = courtRepository.getCourtLocation().getOrNull() ?: run {
+            println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: ERRO ao buscar coords da quadra, saindo")
+            return null
+        }
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: coords da quadra = lat=${courtCoords.latitude} lng=${courtCoords.longitude}")
+
+        val userCoords = locationService.getCurrentLocation()
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: coords do usuário = $userCoords")
+        val (userLat, userLng) = userCoords ?: run {
+            println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: localização do usuário indisponível, usando intervalo MEDIUM")
+            return LocationUpdateInterval.MEDIUM
+        }
 
         val distanceMeters = calculateDistance(
             user  = MapCoordinates(userLat, userLng),
             court = courtCoords
         )
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: distância calculada = ${distanceMeters.toInt()}m")
 
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: chamando sendLocation()")
         sendLocation()
 
-        return getInterval(distanceMeters)
+        val interval = getInterval(distanceMeters)
+        println("[TEMBT-DEBUG] LocationMonitoringCoordinator.runCycle: próximo intervalo = $interval")
+        return interval
     }
 }

@@ -15,7 +15,8 @@ class MapUiStateIos(
     val center: MapCoordinates?,
     val courtName: String,
     val error: String?,
-    val players: List<PlayerIos>
+    val players: List<PlayerIos>,
+    val lastUpdatedAt: String?
 ) {
     companion object {
         fun from(state: MapUiState): MapUiStateIos = when (state) {
@@ -27,7 +28,8 @@ class MapUiStateIos(
                 center = null,
                 courtName = "",
                 error = null,
-                players = emptyList()
+                players = emptyList(),
+                lastUpdatedAt = null
             )
             is MapUiState.PermissionRequired -> MapUiStateIos(
                 isLoading = false,
@@ -37,7 +39,8 @@ class MapUiStateIos(
                 center = null,
                 courtName = "",
                 error = null,
-                players = emptyList()
+                players = emptyList(),
+                lastUpdatedAt = null
             )
             is MapUiState.BackgroundPermissionRequired -> MapUiStateIos(
                 isLoading = false,
@@ -47,7 +50,8 @@ class MapUiStateIos(
                 center = null,
                 courtName = "",
                 error = null,
-                players = emptyList()
+                players = emptyList(),
+                lastUpdatedAt = null
             )
             is MapUiState.MapReady -> MapUiStateIos(
                 isLoading = false,
@@ -57,7 +61,8 @@ class MapUiStateIos(
                 center = state.center,
                 courtName = state.courtName,
                 error = null,
-                players = state.players.map { PlayerIos(it.name, it.lat, it.lng) }
+                players = state.players.map { PlayerIos(it.name, it.lat, it.lng) },
+                lastUpdatedAt = state.lastUpdatedAt
             )
             is MapUiState.Error -> MapUiStateIos(
                 isLoading = false,
@@ -67,7 +72,8 @@ class MapUiStateIos(
                 center = null,
                 courtName = "",
                 error = state.message,
-                players = emptyList()
+                players = emptyList(),
+                lastUpdatedAt = null
             )
         }
     }

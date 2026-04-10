@@ -33,6 +33,10 @@ class MapViewModelIos(private val viewModel: MapViewModel) {
         viewModel.refreshPlayers()
     }
 
+    fun onPause() {
+        viewModel.onPause()
+    }
+
     fun sendLocation() {
         viewModel.sendLocation()
     }

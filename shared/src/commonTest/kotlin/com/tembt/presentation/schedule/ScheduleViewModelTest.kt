@@ -1,5 +1,6 @@
 package com.tembt.presentation.schedule
 
+import app.cash.turbine.test
 import com.tembt.domain.model.ScheduleWindow
 import com.tembt.domain.model.SlotPlayer
 import com.tembt.domain.model.WindowSlot
@@ -62,35 +63,46 @@ class ScheduleViewModelTest {
     // --- Auto-load on init ---
 
     @Test
-    fun `on init window is loaded automatically`() =
+    fun `given window succeeds on init state is Ready with window`() =
         runTest(testDispatcher) {
+            // Arrange
             windowRepo.willReturnWindow(Result.success(defaultWindow))
+
+            // Act
             val vm = createViewModel()
             advanceUntilIdle()
 
+            // Assert
             val state = assertIs<ScheduleUiState.Ready>(vm.uiState.value)
             assertEquals(defaultWindow, state.window)
         }
 
     @Test
-    fun `on init state starts as Loading before data arrives`() =
+    fun `given init before coroutines advance state is Loading`() =
         runTest(testDispatcher) {
+            // Arrange
             windowRepo.willReturnWindow(Result.success(defaultWindow))
+
+            // Act
             val vm = createViewModel()
 
-            // Coroutine not yet advanced — state should still be Loading
+            // Assert — coroutine not yet advanced; state should still be Loading
             assertIs<ScheduleUiState.Loading>(vm.uiState.value)
         }
 
     // --- loadWindow ---
 
     @Test
-    fun `when loadWindow succeeds state is Ready with window`() =
+    fun `given window succeeds when loadWindow called state is Ready with window`() =
         runTest(testDispatcher) {
+            // Arrange
             windowRepo.willReturnWindow(Result.success(defaultWindow))
             val vm = createViewModel()
+
+            // Act
             advanceUntilIdle()
 
+            // Assert
             assertIs<ScheduleUiState.Ready>(vm.uiState.value)
         }
 
@@ -116,10 +128,47 @@ class ScheduleViewModelTest {
             assertEquals("Erro ao carregar agenda.", state.message)
         }
 
+    // --- shareWindow ---
+
+    @Test
+    fun `given state is Ready when shareWindow called CopyShareLink event is emitted with correct url`() =
+        runTest(testDispatcher) {
+            // Arrange
+            windowRepo.willReturnWindow(Result.success(defaultWindow))
+            val vm = createViewModel()
+            advanceUntilIdle()
+            assertIs<ScheduleUiState.Ready>(vm.uiState.value)
+
+            // Act + Assert
+            vm.uiEvent.test {
+                vm.shareWindow()
+                advanceUntilIdle()
+                val event = awaitItem() as ScheduleUiEvent.CopyShareLink
+                assertEquals("tembt://schedule?date=2026-03-17", event.url)
+            }
+        }
+
+    @Test
+    fun `given state is not Ready when shareWindow called no event is emitted`() =
+        runTest(testDispatcher) {
+            // Arrange — window fails so state stays Error
+            windowRepo.willReturnWindow(Result.failure(RuntimeException("Error")))
+            val vm = createViewModel()
+            advanceUntilIdle()
+            assertIs<ScheduleUiState.Error>(vm.uiState.value)
+
+            // Act + Assert — no event should be emitted
+            vm.uiEvent.test {
+                vm.shareWindow()
+                advanceUntilIdle()
+                expectNoEvents()
+            }
+        }
+
     // --- checkin ---
 
     @Test
-    fun `given state is Ready when checkin succeeds checkedInSlotTime is set`() =
+    fun `given state is Ready when checkin succeeds checkedInSlotTime is set and isCheckingIn is false`() =
         runTest(testDispatcher) {
             windowRepo.willReturnWindow(Result.success(defaultWindow))
             windowRepo.willReturnCheckin(Result.success(Unit))
@@ -131,6 +180,7 @@ class ScheduleViewModelTest {
 
             val state = assertIs<ScheduleUiState.Ready>(vm.uiState.value)
             assertEquals("08:00", state.checkedInSlotTime)
+            assertFalse(state.isCheckingIn)
         }
 
     @Test

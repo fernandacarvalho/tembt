@@ -11,7 +11,8 @@ sealed class MapUiState {
     data class MapReady(
         val center: MapCoordinates,
         val courtName: String = "",
-        val players: List<Player> = emptyList()
+        val players: List<Player> = emptyList(),
+        val lastUpdatedAt: String? = null
     ) : MapUiState()
     data class Error(val message: String) : MapUiState()
 }

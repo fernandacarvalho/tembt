@@ -59,10 +59,15 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
-    // Re-check permission on every app resume (e.g., user returns from system Settings)
+    // Re-check permission on every app resume (e.g., user returns from system Settings).
+    // Stop polling on pause to avoid background network calls.
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) viewModel.onResume()
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> viewModel.onResume()
+                Lifecycle.Event.ON_PAUSE  -> viewModel.onPause()
+                else -> {}
+            }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
@@ -149,6 +154,13 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = PitchBlack
                             )
+                            if (state.lastUpdatedAt != null) {
+                                Text(
+                                    text = "Última atualização ${state.lastUpdatedAt}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = PitchBlack.copy(alpha = 0.6f)
+                                )
+                            }
                         }
                         IconButton(onClick = { viewModel.refreshPlayers() }) {
                             Icon(

@@ -443,13 +443,15 @@ vm.uiEvent.test {
 ### Naming conventions for tests
 
 ```
-given [precondition], when [action], [expected outcome]
+given [precondition] when [action] [expected outcome]
 ```
 
+**Never use commas in test function names.** Kotlin/Native (iOS target) does not allow commas in backtick function names and will fail to compile. Use spaces only.
+
 Examples:
-- `given permission DENIED on init, state is PermissionRequired with DENIED`
-- `given registration fails, storage is not updated`
-- `given state is not Ready, when checkin called, it is ignored`
+- `given permission DENIED on init state is PermissionRequired with DENIED`
+- `given registration fails storage is not updated`
+- `given state is not Ready when checkin called it is ignored`
 
 ---
 

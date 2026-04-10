@@ -11,8 +11,8 @@ import com.tembt.fake.FakeSendLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlin.test.AfterTest
@@ -20,6 +20,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -31,6 +33,7 @@ class MapViewModelTest {
     private lateinit var getCourtLocation: FakeGetCourtLocation
     private lateinit var getPlayersAtCourt: FakeGetPlayersAtCourt
     private lateinit var sendLocation: FakeSendLocation
+    private var latestVm: MapViewModel? = null
 
     @BeforeTest
     fun setUp() {
@@ -42,14 +45,19 @@ class MapViewModelTest {
     }
 
     @AfterTest
-    fun tearDown() = Dispatchers.resetMain()
+    fun tearDown() {
+        latestVm?.onPause()
+        latestVm = null
+        Dispatchers.resetMain()
+    }
 
-    private fun createViewModel() = MapViewModel(
+    private fun createViewModel(pollIntervalMs: Long = Long.MAX_VALUE) = MapViewModel(
         locationService = locationService,
         getCourtLocation = getCourtLocation,
         getPlayersAtCourt = getPlayersAtCourt,
-        sendLocationUseCase = sendLocation
-    )
+        sendLocationUseCase = sendLocation,
+        pollIntervalMs = pollIntervalMs
+    ).also { latestVm = it }
 
     // --- Permission checks ---
 
@@ -87,6 +95,23 @@ class MapViewModelTest {
             )
         }
 
+    // --- Loading intermediate state ---
+
+    @Test
+    fun `given permission GRANTED before coroutines advance state is Loading`() =
+        runTest(testDispatcher) {
+            // Arrange
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
+            getPlayersAtCourt.willReturn(Result.success(emptyList()))
+
+            // Act
+            val vm = createViewModel()
+
+            // Assert — fetch coroutine is queued but not yet executed
+            assertIs<MapUiState.Loading>(vm.uiState.value)
+        }
+
     // --- Successful map load ---
 
     @Test
@@ -100,11 +125,27 @@ class MapViewModelTest {
 
             // Act
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
             assertEquals(center, state.center)
+        }
+
+    @Test
+    fun `given permission GRANTED and court succeeds sendLocation is called once during court fetch`() =
+        runTest(testDispatcher) {
+            // Arrange
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
+            getPlayersAtCourt.willReturn(Result.success(emptyList()))
+
+            // Act
+            val vm = createViewModel()
+            runCurrent()
+
+            // Assert — sendLocation is triggered inside fetchCourtAndShowMap after court succeeds
+            assertEquals(1, sendLocation.callCount)
         }
 
     @Test
@@ -122,7 +163,7 @@ class MapViewModelTest {
 
             // Act
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
@@ -141,7 +182,7 @@ class MapViewModelTest {
 
             // Act
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
@@ -159,11 +200,47 @@ class MapViewModelTest {
 
             // Act
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
             assertEquals("", state.courtName)
+        }
+
+    // --- lastUpdatedAt ---
+
+    @Test
+    fun `given court and players succeed lastUpdatedAt is set`() =
+        runTest(testDispatcher) {
+            // Arrange
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
+            getPlayersAtCourt.willReturn(Result.success(emptyList()))
+
+            // Act
+            val vm = createViewModel()
+            runCurrent()
+
+            // Assert
+            val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
+            assertNotNull(state.lastUpdatedAt)
+        }
+
+    @Test
+    fun `given players fetch fails lastUpdatedAt remains null`() =
+        runTest(testDispatcher) {
+            // Arrange
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
+            getPlayersAtCourt.willReturn(Result.failure(RuntimeException("Players unavailable")))
+
+            // Act
+            val vm = createViewModel()
+            runCurrent()
+
+            // Assert
+            val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
+            assertNull(state.lastUpdatedAt)
         }
 
     // --- Error states ---
@@ -177,7 +254,7 @@ class MapViewModelTest {
 
             // Act
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.Error>(vm.uiState.value)
@@ -196,7 +273,7 @@ class MapViewModelTest {
 
             // Act
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
@@ -233,7 +310,7 @@ class MapViewModelTest {
             // Act
             locationService.stubbedBackgroundStatus = LocationPermissionStatus.GRANTED
             vm.onResume()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertIs<MapUiState.MapReady>(vm.uiState.value)
@@ -248,15 +325,32 @@ class MapViewModelTest {
             locationService.stubbedStatus = LocationPermissionStatus.GRANTED
             getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
             val callsBefore = getCourtLocation.callCount
 
             // Act
             vm.onResume()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertEquals(callsBefore, getCourtLocation.callCount)
+        }
+
+    @Test
+    fun `given fetch is in flight when checkPermission called again court is not fetched twice`() =
+        runTest(testDispatcher) {
+            // Arrange — permission granted; fetch coroutine is queued but not yet started
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
+            getPlayersAtCourt.willReturn(Result.success(emptyList()))
+            val vm = createViewModel() // init queues the fetch job (isActive = true)
+
+            // Act — trigger a second checkPermission while the first job is still active
+            vm.onResume()
+            runCurrent()
+
+            // Assert — only one court fetch despite two checkPermission calls
+            assertEquals(1, getCourtLocation.callCount)
         }
 
     @Test
@@ -271,7 +365,7 @@ class MapViewModelTest {
             // Act
             locationService.stubbedStatus = LocationPermissionStatus.GRANTED
             vm.onResume()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertIs<MapUiState.MapReady>(vm.uiState.value)
@@ -288,13 +382,13 @@ class MapViewModelTest {
             getCourtLocation.willReturn(Result.success(center))
             getPlayersAtCourt.willReturn(Result.success(emptyList()))
             val vm = createViewModel()
-            advanceUntilIdle()
+            runCurrent()
             val updatedPlayers = listOf(Player("Alice", -23.0, -46.0))
             getPlayersAtCourt.willReturn(Result.success(updatedPlayers))
 
             // Act
             vm.refreshPlayers()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
@@ -311,7 +405,7 @@ class MapViewModelTest {
 
             // Act
             vm.refreshPlayers()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertEquals(stateBefore, vm.uiState.value)
@@ -330,7 +424,7 @@ class MapViewModelTest {
             locationService.stubbedStatus = LocationPermissionStatus.GRANTED
             getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
             vm.onPermissionResult()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertEquals(1, locationService.markPermissionRequestedCallCount)
@@ -346,10 +440,12 @@ class MapViewModelTest {
             locationService.stubbedStatus = LocationPermissionStatus.DENIED
             val vm = createViewModel()
 
-            // Act + Assert
+            // Act
             vm.uiEvent.test {
                 vm.onOpenSettingsRequested()
-                advanceUntilIdle()
+                runCurrent()
+
+                // Assert
                 assertEquals(MapUiEvent.OpenAppSettings, awaitItem())
             }
         }
@@ -365,7 +461,7 @@ class MapViewModelTest {
 
             // Act
             vm.sendLocation()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertEquals(1, sendLocation.callCount)
@@ -382,9 +478,10 @@ class MapViewModelTest {
 
             // Act
             vm.sendLocation()
-            advanceUntilIdle()
+            runCurrent()
 
             // Assert
             assertEquals(stateBefore, vm.uiState.value)
         }
+
 }

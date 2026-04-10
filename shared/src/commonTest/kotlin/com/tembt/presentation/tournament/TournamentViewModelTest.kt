@@ -55,19 +55,27 @@ class TournamentViewModelTest {
     // --- Initial state ---
 
     @Test
-    fun `on init state starts as Loading before data arrives`() = runTest(testDispatcher) {
+    fun `given init before coroutines advance state is Loading`() = runTest(testDispatcher) {
+        // Arrange
         repo.willReturn(Result.success(singleTournament))
+
+        // Act
         val vm = createViewModel()
 
+        // Assert
         assertIs<TournamentUiState.Loading>(vm.uiState.value)
     }
 
     @Test
-    fun `on init tournaments are loaded automatically`() = runTest(testDispatcher) {
+    fun `given tournaments succeed on init state is Ready`() = runTest(testDispatcher) {
+        // Arrange
         repo.willReturn(Result.success(singleTournament))
+
+        // Act
         val vm = createViewModel()
         advanceUntilIdle()
 
+        // Assert
         val state = assertIs<TournamentUiState.Ready>(vm.uiState.value)
         assertEquals(singleTournament, state.tournaments)
     }
@@ -138,16 +146,33 @@ class TournamentViewModelTest {
     // --- Reload ---
 
     @Test
-    fun `calling load again resets state to Loading then resolves`() = runTest(testDispatcher) {
+    fun `given state is Ready when load called state transitions to Loading`() = runTest(testDispatcher) {
+        // Arrange — advance to Ready first
         repo.willReturn(Result.success(singleTournament))
         val vm = createViewModel()
         advanceUntilIdle()
         assertIs<TournamentUiState.Ready>(vm.uiState.value)
 
+        // Act
         vm.load()
-        // Before advancing — must be Loading again
+
+        // Assert — before advancing, coroutine sets Loading synchronously
         assertIs<TournamentUiState.Loading>(vm.uiState.value)
+    }
+
+    @Test
+    fun `given state is Ready when load called and succeeds state returns to Ready`() = runTest(testDispatcher) {
+        // Arrange — advance to Ready first
+        repo.willReturn(Result.success(singleTournament))
+        val vm = createViewModel()
         advanceUntilIdle()
+        assertIs<TournamentUiState.Ready>(vm.uiState.value)
+
+        // Act
+        vm.load()
+        advanceUntilIdle()
+
+        // Assert
         assertIs<TournamentUiState.Ready>(vm.uiState.value)
     }
 }

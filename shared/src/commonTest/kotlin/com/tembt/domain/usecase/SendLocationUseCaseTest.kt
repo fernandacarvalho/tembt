@@ -19,10 +19,13 @@ class SendLocationUseCaseTest {
 
     @Test
     fun `given location available invokes updateLocation with correct args`() = runTest {
+        // Arrange
         locationService.location = Pair(-22.9557, -43.1961)
 
+        // Act
         createUseCase()()
 
+        // Assert
         assertEquals(1, locationRepo.callCount)
         assertEquals("uuid-42", locationRepo.lastUuid)
         assertEquals(-22.9557, locationRepo.lastLat)
@@ -31,40 +34,52 @@ class SendLocationUseCaseTest {
 
     @Test
     fun `given location available and API succeeds returns success`() = runTest {
+        // Arrange
         locationService.location = Pair(-22.9557, -43.1961)
         locationRepo.willReturn(Result.success(Unit))
 
+        // Act
         val result = createUseCase()()
 
+        // Assert
         assertTrue(result.isSuccess)
     }
 
     @Test
     fun `given location available and API fails returns failure`() = runTest {
+        // Arrange
         locationService.location = Pair(-22.9557, -43.1961)
         locationRepo.willReturn(Result.failure(RuntimeException("Network error")))
 
+        // Act
         val result = createUseCase()()
 
+        // Assert
         assertTrue(result.isFailure)
     }
 
     @Test
     fun `given location unavailable returns failure without calling API`() = runTest {
+        // Arrange
         locationService.location = null
 
+        // Act
         val result = createUseCase()()
 
+        // Assert
         assertTrue(result.isFailure)
         assertEquals(0, locationRepo.callCount)
     }
 
     @Test
     fun `given location unavailable failure message is set`() = runTest {
+        // Arrange
         locationService.location = null
 
+        // Act
         val result = createUseCase()()
 
+        // Assert
         assertFalse(result.exceptionOrNull()?.message.isNullOrBlank())
     }
 }

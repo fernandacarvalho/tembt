@@ -10,9 +10,13 @@ class FakeLocationService(
 ) : LocationServiceContract {
 
     var markPermissionRequestedCallCount = 0
+    var getCurrentLocationCallCount = 0
 
     override fun getPermissionStatus() = stubbedStatus
     override fun getBackgroundPermissionStatus() = stubbedBackgroundStatus
     override fun markPermissionRequested() { markPermissionRequestedCallCount++ }
-    override fun getCurrentLocation() = location
+    override fun getCurrentLocation(): Pair<Double, Double>? {
+        getCurrentLocationCallCount++
+        return location
+    }
 }

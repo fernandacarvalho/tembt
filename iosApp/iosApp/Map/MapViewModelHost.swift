@@ -15,7 +15,8 @@ final class MapViewModelHost: ObservableObject {
         center: nil,
         courtName: "",
         error: nil,
-        players: []
+        players: [],
+        lastUpdatedAt: nil
     )
 
     private let vmIos: MapViewModelIos
@@ -29,6 +30,10 @@ final class MapViewModelHost: ObservableObject {
 
     func checkPermission() {
         vmIos.checkPermission()
+    }
+
+    func onPause() {
+        vmIos.onPause()
     }
 
     func refreshPlayers() {

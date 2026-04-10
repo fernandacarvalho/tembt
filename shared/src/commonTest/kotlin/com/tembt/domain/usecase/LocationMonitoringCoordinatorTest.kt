@@ -61,6 +61,20 @@ class LocationMonitoringCoordinatorTest {
         assertEquals(0, sendLocation.callCount)
     }
 
+    @Test
+    fun `given window date does not match today scheduleStorage is not saved`() = runTest {
+        // Arrange
+        windowRepo.willReturnWindow(Result.success(defaultWindow(date = otherDate)))
+        courtRepo.willReturn(Result.success(courtCoords))
+        locationService.location = Pair(-22.9557, -43.1961)
+
+        // Act
+        createCoordinator().runCycle(today)
+
+        // Assert — schedule should not be persisted when court is not open today
+        assertEquals(0, scheduleStorage.saveCallCount)
+    }
+
     // --- Pause guard ---
 
     @Test
@@ -191,14 +205,14 @@ class LocationMonitoringCoordinatorTest {
     }
 
     @Test
-    fun `given user location unavailable runCycle returns FAR`() = runTest {
+    fun `given user location unavailable runCycle returns MEDIUM`() = runTest {
         windowRepo.willReturnWindow(Result.success(defaultWindow()))
         courtRepo.willReturn(Result.success(courtCoords))
         locationService.location = null
 
         val result = createCoordinator().runCycle(today)
 
-        assertEquals(LocationUpdateInterval.FAR, result)
+        assertEquals(LocationUpdateInterval.MEDIUM, result)
         assertEquals(0, sendLocation.callCount)
     }
 }

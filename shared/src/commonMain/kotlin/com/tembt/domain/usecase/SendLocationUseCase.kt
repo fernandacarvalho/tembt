@@ -10,12 +10,17 @@ class SendLocationUseCase(
     private val playerStorage: PlayerStorage
 ) : SendLocation {
     override suspend operator fun invoke(): Result<Unit> {
-        val (lat, lng) = locationService.getCurrentLocation()
-            ?: return Result.failure(IllegalStateException("Localização não disponível"))
-        return locationRepository.updateLocation(
-            uuid = playerStorage.getDeviceUuid(),
-            lat = lat,
-            lng = lng
-        )
+        println("[TEMBT-DEBUG] SendLocation: chamando getCurrentLocation()")
+        val coords = locationService.getCurrentLocation()
+        println("[TEMBT-DEBUG] SendLocation: getCurrentLocation() retornou = $coords")
+        val (lat, lng) = coords ?: run {
+            println("[TEMBT-DEBUG] SendLocation: ERRO — localização não disponível, abortando envio")
+            return Result.failure(IllegalStateException("Localização não disponível"))
+        }
+        val uuid = playerStorage.getDeviceUuid()
+        println("[TEMBT-DEBUG] SendLocation: enviando para API — uuid=$uuid lat=$lat lng=$lng")
+        val result = locationRepository.updateLocation(uuid = uuid, lat = lat, lng = lng)
+        println("[TEMBT-DEBUG] SendLocation: resposta da API = $result")
+        return result
     }
 }

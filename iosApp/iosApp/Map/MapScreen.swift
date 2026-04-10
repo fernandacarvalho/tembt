@@ -86,6 +86,8 @@ struct MapScreen: View {
             if phase == .active {
                 isAwaitingPermission = false
                 host.checkPermission()
+            } else if phase == .background {
+                host.onPause()
             }
         }
     }
@@ -125,6 +127,13 @@ private struct MapReadyView: View {
                     Text(String(format: String(localized: "map_players_count"), players.count))
                         .font(.appBody)
                         .foregroundColor(.appTextDark)
+                    if let lastUpdated = host.uiState.lastUpdatedAt {
+                        Text("Última atualização \(lastUpdated)")
+                            .font(.appCaption)
+                            .foregroundColor(.appTextMuted)
+                            .opacity(0.8)
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 Spacer()
                 Button(action: { host.refreshPlayers() }) {
