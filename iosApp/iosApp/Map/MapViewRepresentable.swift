@@ -116,6 +116,8 @@ struct MapViewRepresentable: UIViewRepresentable {
                     for: annotation
                 ) as? MKMarkerAnnotationView
                 view?.markerTintColor = UIColor.systemOrange
+                view?.titleVisibility = .hidden
+                view?.subtitleVisibility = .hidden
                 return view
             }
 
