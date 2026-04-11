@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Tembt" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
+    <style name="Theme.Tembt.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@drawable/splash_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tembt</item>
+    </style>
+</resources>

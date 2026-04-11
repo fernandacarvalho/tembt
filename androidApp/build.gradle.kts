@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.lifecycle.runtime.compose)
 
+    implementation(libs.androidx.splashscreen)
     implementation(libs.maplibre.android)
 
     implementation(libs.koin.android)

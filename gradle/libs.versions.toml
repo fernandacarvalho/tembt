@@ -13,6 +13,7 @@ kotlinxSerialization = "1.8.0"
 turbine = "1.1.0"
 kover = "0.8.3"
 kotlinxDatetime = "0.6.1"
+splashscreen = "1.0.1"
 
 [libraries]
 # Coroutines
@@ -38,6 +39,9 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+
+# SplashScreen
+androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
 # Maps
 maplibre-android = { group = "org.maplibre.gl", name = "android-sdk", version.ref = "maplibre" }

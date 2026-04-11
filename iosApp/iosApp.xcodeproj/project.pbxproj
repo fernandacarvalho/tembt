@@ -18,6 +18,7 @@
 		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
 		B001000000000011 /* ComposeHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000013 /* ComposeHostingView.swift */; };
 		B001000000000014 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000014 /* Localizable.strings */; };
+		B001000000000017 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000017 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		A001000000000013 /* ComposeHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposeHostingView.swift; sourceTree = "<group>"; };
 		A001000000000015 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A001000000000016 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		A001000000000017 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				D001000000000003 /* Map */,
 				D001000000000009 /* Shared */,
 				A001000000000007 /* Assets.xcassets */,
+				A001000000000017 /* LaunchScreen.storyboard */,
 				A001000000000014 /* Localizable.strings */,
 				A001000000000009 /* Info.plist */,
 			);
@@ -170,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B001000000000007 /* Assets.xcassets in Resources */,
+				B001000000000017 /* LaunchScreen.storyboard in Resources */,
 				B001000000000014 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
