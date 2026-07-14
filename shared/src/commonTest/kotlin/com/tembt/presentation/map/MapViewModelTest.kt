@@ -3,6 +3,7 @@ package com.tembt.presentation.map
 import app.cash.turbine.test
 import com.tembt.domain.model.LocationPermissionStatus
 import com.tembt.domain.model.MapCoordinates
+import com.tembt.domain.model.NetworkError
 import com.tembt.domain.model.Player
 import com.tembt.fake.FakeGetCourtLocation
 import com.tembt.fake.FakeGetPlayersAtCourt
@@ -11,6 +12,7 @@ import com.tembt.fake.FakeSendLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -246,11 +248,28 @@ class MapViewModelTest {
     // --- Error states ---
 
     @Test
-    fun `given permission GRANTED and court fetch fails state is Error`() =
+    fun `given permission GRANTED and court fetch fails state is Error with generic message`() =
         runTest(testDispatcher) {
             // Arrange
             locationService.stubbedStatus = LocationPermissionStatus.GRANTED
-            getCourtLocation.willReturn(Result.failure(RuntimeException("Network error")))
+            getCourtLocation.willReturn(Result.failure(RuntimeException("boom")))
+
+            // Act
+            val vm = createViewModel()
+            runCurrent()
+
+            // Assert — raw exception message is never leaked to the UI
+            val state = assertIs<MapUiState.Error>(vm.uiState.value)
+            assertEquals("Erro ao carregar a quadra.", state.message)
+            assertEquals(0, getPlayersAtCourt.callCount)
+        }
+
+    @Test
+    fun `given court fails with NetworkError state is Error with connection message`() =
+        runTest(testDispatcher) {
+            // Arrange
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.failure(NetworkError(RuntimeException("no route to host"))))
 
             // Act
             val vm = createViewModel()
@@ -258,8 +277,106 @@ class MapViewModelTest {
 
             // Assert
             val state = assertIs<MapUiState.Error>(vm.uiState.value)
-            assertEquals("Network error", state.message)
-            assertEquals(0, getPlayersAtCourt.callCount)
+            assertEquals("Sem conexão. Verifique sua internet e tente novamente.", state.message)
+        }
+
+    @Test
+    fun `given state is Error when onResume called court is not re-fetched`() =
+        runTest(testDispatcher) {
+            // Arrange — first fetch fails, landing on Error
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.failure(RuntimeException("boom")))
+            val vm = createViewModel()
+            runCurrent()
+            assertIs<MapUiState.Error>(vm.uiState.value)
+            val callsBefore = getCourtLocation.callCount
+
+            // Act — a lifecycle resume must not silently retry the failed fetch
+            vm.onResume()
+            runCurrent()
+
+            // Assert — still in Error, no new fetch
+            assertIs<MapUiState.Error>(vm.uiState.value)
+            assertEquals(callsBefore, getCourtLocation.callCount)
+        }
+
+    @Test
+    fun `given state is Error when retry called and fetch succeeds state is MapReady`() =
+        runTest(testDispatcher) {
+            // Arrange — first fetch fails
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.failure(RuntimeException("boom")))
+            getPlayersAtCourt.willReturn(Result.success(emptyList()))
+            val vm = createViewModel()
+            runCurrent()
+            assertIs<MapUiState.Error>(vm.uiState.value)
+
+            // Act — user taps retry, connection is back
+            getCourtLocation.willReturn(Result.success(MapCoordinates(-23.0, -46.0)))
+            vm.retry()
+            runCurrent()
+
+            // Assert
+            assertIs<MapUiState.MapReady>(vm.uiState.value)
+        }
+
+    @Test
+    fun `given state is Error and permission revoked when retry called state is PermissionRequired`() =
+        runTest(testDispatcher) {
+            // Arrange — first fetch fails
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.failure(RuntimeException("boom")))
+            val vm = createViewModel()
+            runCurrent()
+            assertIs<MapUiState.Error>(vm.uiState.value)
+
+            // Act — permission revoked in the meantime, then user taps retry
+            locationService.stubbedStatus = LocationPermissionStatus.DENIED
+            vm.retry()
+            runCurrent()
+
+            // Assert — retry re-checks permission instead of blindly fetching
+            val state = assertIs<MapUiState.PermissionRequired>(vm.uiState.value)
+            assertEquals(LocationPermissionStatus.DENIED, state.status)
+        }
+
+    @Test
+    fun `given polling active when players fetch fails polling continues silently at next cycle`() =
+        runTest(testDispatcher) {
+            // Arrange — map loads, polling runs on a short interval
+            val center = MapCoordinates(latitude = -23.0, longitude = -46.0)
+            locationService.stubbedStatus = LocationPermissionStatus.GRANTED
+            getCourtLocation.willReturn(Result.success(center))
+            getPlayersAtCourt.willReturn(Result.success(emptyList()))
+            val vm = createViewModel(pollIntervalMs = 1_000)
+            runCurrent()
+            assertIs<MapUiState.MapReady>(vm.uiState.value)
+            val callsAfterLoad = getPlayersAtCourt.callCount
+
+            // Act — a polling cycle fails
+            getPlayersAtCourt.willReturn(Result.failure(RuntimeException("Players unavailable")))
+            advanceTimeBy(1_001)
+            runCurrent()
+
+            // Assert — failure is swallowed, state unchanged, poll count advanced
+            assertIs<MapUiState.MapReady>(vm.uiState.value)
+            assertEquals(callsAfterLoad + 1, getPlayersAtCourt.callCount)
+
+            // Act — next cycle recovers
+            val players = listOf(Player("Alice", -23.0, -46.0))
+            getPlayersAtCourt.willReturn(Result.success(players))
+            advanceTimeBy(1_001)
+            runCurrent()
+
+            // Assert — polling kept running and picked up the new data
+            val state = assertIs<MapUiState.MapReady>(vm.uiState.value)
+            assertEquals(players, state.players)
+            assertEquals(callsAfterLoad + 2, getPlayersAtCourt.callCount)
+
+            // Cleanup — the polling loop runs forever (while(true) + delay); with a finite
+            // pollIntervalMs, runTest's implicit final drain never reaches idle unless it's
+            // cancelled explicitly before the test coroutine completes.
+            vm.onPause()
         }
 
     @Test

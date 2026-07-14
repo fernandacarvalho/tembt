@@ -3,6 +3,7 @@ package com.tembt.presentation.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tembt.domain.model.LocationPermissionStatus
+import com.tembt.domain.model.NetworkError
 import com.tembt.domain.usecase.GetCourtLocation
 import com.tembt.domain.usecase.GetPlayersAtCourt
 import com.tembt.domain.usecase.SendLocation
@@ -61,31 +62,43 @@ class MapViewModel(
         viewModelScope.launch { _uiEvent.emit(MapUiEvent.OpenAppSettings) }
     }
 
-    fun checkPermission() {
+    // Lifecycle-driven re-check (resume, permission result). Never auto-retries a failed fetch —
+    // an Error state stays put so the user sees feedback and taps retry, avoiding Loading↔Error loops.
+    fun checkPermission() = evaluatePermission(fetchFromError = false)
+
+    // User-initiated retry from the Error screen. Re-checks permission first (it may have been
+    // revoked while the error was on screen) and only re-fetches when permission is still granted.
+    fun retry() = evaluatePermission(fetchFromError = true)
+
+    private fun evaluatePermission(fetchFromError: Boolean) {
         val status = locationService.getPermissionStatus()
         val bgStatus = locationService.getBackgroundPermissionStatus()
-        println("[TEMBT-DEBUG] MapViewModel.checkPermission: status=$status bgStatus=$bgStatus uiState=${_uiState.value}")
+        println("[TEMBT-DEBUG] MapViewModel.evaluatePermission: status=$status bgStatus=$bgStatus fetchFromError=$fetchFromError uiState=${_uiState.value}")
         when (status) {
             LocationPermissionStatus.GRANTED -> {
                 val bgGranted = bgStatus == LocationPermissionStatus.GRANTED
                 if (bgGranted) {
-                    if (_uiState.value is MapUiState.MapReady) {
-                        println("[TEMBT-DEBUG] MapViewModel.checkPermission: já está MapReady, reiniciando polling")
-                        startPolling()
-                        return
+                    when {
+                        _uiState.value is MapUiState.MapReady -> {
+                            println("[TEMBT-DEBUG] MapViewModel.evaluatePermission: já está MapReady, reiniciando polling")
+                            startPolling()
+                        }
+                        _uiState.value is MapUiState.Error && !fetchFromError -> {
+                            println("[TEMBT-DEBUG] MapViewModel.evaluatePermission: em Error, aguardando retry do usuário")
+                        }
+                        else -> fetchCourtAndShowMap()
                     }
-                    fetchCourtAndShowMap()
                 } else {
-                    println("[TEMBT-DEBUG] MapViewModel.checkPermission: permissão de background não concedida")
+                    println("[TEMBT-DEBUG] MapViewModel.evaluatePermission: permissão de background não concedida")
                     _uiState.value = MapUiState.BackgroundPermissionRequired
                 }
             }
             LocationPermissionStatus.DENIED -> {
-                println("[TEMBT-DEBUG] MapViewModel.checkPermission: permissão NEGADA")
+                println("[TEMBT-DEBUG] MapViewModel.evaluatePermission: permissão NEGADA")
                 _uiState.value = MapUiState.PermissionRequired(LocationPermissionStatus.DENIED)
             }
             LocationPermissionStatus.NOT_DETERMINED -> {
-                println("[TEMBT-DEBUG] MapViewModel.checkPermission: permissão NOT_DETERMINED")
+                println("[TEMBT-DEBUG] MapViewModel.evaluatePermission: permissão NOT_DETERMINED")
                 _uiState.value = MapUiState.PermissionRequired(LocationPermissionStatus.NOT_DETERMINED)
             }
         }
@@ -110,9 +123,7 @@ class MapViewModel(
                 },
                 onFailure = { err ->
                     println("[TEMBT-DEBUG] MapViewModel.fetchCourtAndShowMap: ERRO ao buscar quadra — ${err.message}")
-                    _uiState.value = MapUiState.Error(
-                        err.message ?: "Erro ao carregar a quadra."
-                    )
+                    _uiState.value = MapUiState.Error(errorMessageFor(err))
                 }
             )
         }
@@ -162,6 +173,13 @@ class MapViewModel(
             println("[TEMBT-DEBUG] MapViewModel.doRefreshPlayers: ERRO — ${err.message}")
         }
     }
+
+    private fun errorMessageFor(err: Throwable): String =
+        if (err is NetworkError) {
+            "Sem conexão. Verifique sua internet e tente novamente."
+        } else {
+            "Erro ao carregar a quadra."
+        }
 
     private fun currentTimeString(): String {
         val now = Clock.System.now().toLocalDateTime(TimeZone.of("America/Sao_Paulo"))

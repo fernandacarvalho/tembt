@@ -202,7 +202,7 @@ fun MapScreen(viewModel: MapViewModel = koinViewModel()) {
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Button(onClick = { viewModel.checkPermission() }) { Text("Tentar novamente") }
+                Button(onClick = { viewModel.retry() }) { Text("Tentar novamente") }
             }
         }
     }

@@ -32,6 +32,10 @@ final class MapViewModelHost: ObservableObject {
         vmIos.checkPermission()
     }
 
+    func retry() {
+        vmIos.retry()
+    }
+
     func onPause() {
         vmIos.onPause()
     }

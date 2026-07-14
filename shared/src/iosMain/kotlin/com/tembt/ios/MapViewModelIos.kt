@@ -29,6 +29,10 @@ class MapViewModelIos(private val viewModel: MapViewModel) {
         viewModel.checkPermission()
     }
 
+    fun retry() {
+        viewModel.retry()
+    }
+
     fun refreshPlayers() {
         viewModel.refreshPlayers()
     }

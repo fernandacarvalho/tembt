@@ -61,7 +61,7 @@ struct MapScreen: View {
                         .foregroundColor(.appTextMuted)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
-                    Button(String(localized: "map_retry")) { host.checkPermission() }
+                    Button(String(localized: "map_retry")) { host.retry() }
                         .buttonStyle(.borderedProminent)
                         .tint(.appPrimary)
                 }
