@@ -3,19 +3,23 @@ package com.tembt.di
 import com.tembt.data.remote.TembtApiService
 import com.tembt.data.remote.createHttpClient
 import com.tembt.data.repository.CourtRepositoryImpl
+import com.tembt.data.repository.FeatureFlagRepositoryImpl
 import com.tembt.data.repository.LocationRepositoryImpl
 import com.tembt.data.repository.PlayerRepositoryImpl
 import com.tembt.data.repository.PlayersRepositoryImpl
 import com.tembt.data.repository.TournamentRepositoryImpl
 import com.tembt.data.repository.WindowRepositoryImpl
 import com.tembt.domain.repository.CourtRepository
+import com.tembt.domain.repository.FeatureFlagRepository
 import com.tembt.domain.repository.LocationRepository
 import com.tembt.domain.repository.PlayerRepository
 import com.tembt.domain.repository.PlayersRepository
 import com.tembt.domain.repository.TournamentRepository
 import com.tembt.domain.repository.WindowRepository
 import com.tembt.domain.usecase.CalculateDistanceUseCase
+import com.tembt.domain.usecase.GetEnabledTabsUseCase
 import com.tembt.domain.usecase.GetTournamentsUseCase
+import com.tembt.domain.usecase.SessionTabConfig
 import com.tembt.domain.usecase.CheckinUseCase
 import com.tembt.domain.usecase.GetCourtLocation
 import com.tembt.domain.usecase.GetCourtLocationUseCase
@@ -49,6 +53,10 @@ val appModule = module {
     single<WindowRepository> { WindowRepositoryImpl(get()) }
     single<TournamentRepository> { TournamentRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get()) }
+    single<FeatureFlagRepository> { FeatureFlagRepositoryImpl() }
+
+    // Session-scoped tab config — single so the resolved tabs stay frozen for the whole process
+    single { SessionTabConfig(get()) }
 
     // Use cases — factory {} because they are stateless and cheap to recreate
     factory { RegisterPlayerUseCase(get(), get()) }
@@ -61,6 +69,7 @@ val appModule = module {
     factory { GetLocationUpdateIntervalUseCase() }
     factory { IsCourtOpenUseCase() }
     factory { GetTournamentsUseCase(get()) }
+    factory { GetEnabledTabsUseCase(get()) }
     factory {
         LocationMonitoringCoordinator(
             isCourtOpen          = get(),
@@ -80,7 +89,7 @@ val appModule = module {
     // lifecycle scoping for factory registrations.
     factory { MapViewModel(get(), get(), get(), get()) }
     factory { WelcomeViewModel(get()) }
-    factory { AppViewModel(get()) }
+    factory { AppViewModel(get(), get()) }
     factory { ScheduleViewModel(get(), get(), get()) }
     factory { TournamentViewModel(get()) }
 }

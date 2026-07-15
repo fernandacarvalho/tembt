@@ -49,6 +49,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.logging)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.gitlive.firebase.config)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

@@ -5,7 +5,7 @@ import shared
 struct ContentView: View {
 
     @StateObject private var appHost = AppViewModelHost()
-    @State private var selectedTab = 0
+    @State private var selectedTab: AppTab = .map
 
     var body: some View {
         if appHost.showWelcome {
@@ -13,22 +13,47 @@ struct ContentView: View {
                 ViewControllersKt.welcomeViewController(onRegistered: { appHost.onRegistered() })
             }
             .ignoresSafeArea()
-        } else {
-            MainTabs(selectedTab: $selectedTab)
-                .onOpenURL { url in
-                    if url.scheme == "tembt", url.host == "schedule" {
-                        selectedTab = 1  // Lista tab index
+        } else if let tabs = appHost.enabledTabs {
+            if tabs.count == 1 {
+                // Only the home (map) is enabled — no tab bar at all
+                MapScreen()
+            } else {
+                MainTabs(tabs: tabs, selectedTab: $selectedTab)
+                    .onOpenURL { url in
+                        if url.scheme == "tembt", url.host == "schedule", tabs.contains(.schedule) {
+                            selectedTab = .schedule
+                        }
                     }
-                }
+            }
+        } else {
+            // Session tab config still resolving — mirror LaunchScreen.storyboard so
+            // the transition from the launch screen is seamless
+            LaunchPlaceholder()
         }
+    }
+}
+
+private struct LaunchPlaceholder: View {
+    var body: some View {
+        GeometryReader { geometry in
+            Image("welcome_player")
+                .resizable()
+                .scaledToFill()
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .clipped()
+        }
+        .background(Color.black)
+        .ignoresSafeArea()
     }
 }
 
 private struct MainTabs: View {
 
-    @Binding var selectedTab: Int
+    let tabs: [AppTab]
+    @Binding var selectedTab: AppTab
 
-    init(selectedTab: Binding<Int>) {
+    init(tabs: [AppTab], selectedTab: Binding<AppTab>) {
+        self.tabs = tabs
         _selectedTab = selectedTab
         // iOS 26: no UITabBarAppearance — any appearance setting overrides the native
         // Liquid Glass material and makes the pill appear opaque. Let the system render it.
@@ -52,18 +77,42 @@ private struct MainTabs: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            MapScreen()
-                .tabItem { Label(String(localized: "tab_court"), systemImage: "map.fill") }
-                .tag(0)
-            ComposeHostingView { ViewControllersKt.scheduleViewController() }
-                .ignoresSafeArea()
-                .tabItem { Label(String(localized: "tab_schedule"), systemImage: "list.bullet") }
-                .tag(1)
-            ComposeHostingView { ViewControllersKt.tournamentViewController() }
-                .ignoresSafeArea()
-                .tabItem { Label(String(localized: "tab_tournaments"), systemImage: "trophy.fill") }
-                .tag(2)
+            ForEach(tabs, id: \.self) { tab in
+                screen(for: tab)
+                    .tabItem { label(for: tab) }
+                    .tag(tab)
+            }
         }
         .tint(Color.appPrimary)
+    }
+
+    @ViewBuilder
+    private func screen(for tab: AppTab) -> some View {
+        switch tab {
+        case .map:
+            MapScreen()
+        case .schedule:
+            ComposeHostingView { ViewControllersKt.scheduleViewController() }
+                .ignoresSafeArea()
+        case .tournaments:
+            ComposeHostingView { ViewControllersKt.tournamentViewController() }
+                .ignoresSafeArea()
+        default:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func label(for tab: AppTab) -> some View {
+        switch tab {
+        case .map:
+            Label(String(localized: "tab_court"), systemImage: "map.fill")
+        case .schedule:
+            Label(String(localized: "tab_schedule"), systemImage: "list.bullet")
+        case .tournaments:
+            Label(String(localized: "tab_tournaments"), systemImage: "trophy.fill")
+        default:
+            Label("", systemImage: "questionmark")
+        }
     }
 }

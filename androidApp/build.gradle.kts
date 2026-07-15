@@ -2,6 +2,13 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
     kotlin("android")
+    alias(libs.plugins.googleServices) apply false
+}
+
+// Firebase auto-init only when the config file is present, so the build
+// does not break in checkouts without google-services.json
+if (file("google-services.json").exists()) {
+    apply(plugin = libs.plugins.googleServices.get().pluginId)
 }
 
 android {
@@ -29,6 +36,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        // Required by dev.gitlive:firebase-config-android
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -41,6 +50,8 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
     implementation(project(":shared"))
     implementation(libs.kotlinx.datetime)
 

@@ -1,11 +1,16 @@
 import SwiftUI
 import BackgroundTasks
+import FirebaseCore
 import shared
 
 @main
 struct iOSApp: App {
 
     init() {
+        // Must run before startKoin so the shared module's Remote Config
+        // finds a configured default Firebase app
+        FirebaseApp.configure()
+
         // Register the BGTask handler BEFORE startKoin schedules the task
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: "com.tembt.court.monitoring",

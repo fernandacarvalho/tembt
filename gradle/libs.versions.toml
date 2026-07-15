@@ -14,6 +14,10 @@ turbine = "1.1.0"
 kover = "0.8.3"
 kotlinxDatetime = "0.6.1"
 splashscreen = "1.0.1"
+# 2.1.0 is the newest GitLive release built with Kotlin <= 2.1.20 (2.2.0+ needs Kotlin 2.2 for klib ABI)
+firebaseGitlive = "2.1.0"
+googleServices = "4.4.2"
+desugarJdkLibs = "2.1.5"
 
 [libraries]
 # Coroutines
@@ -60,6 +64,12 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # DateTime
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 
+# Firebase (GitLive KMP wrapper)
+gitlive-firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "firebaseGitlive" }
+
+# Android desugaring (required by dev.gitlive:firebase-config-android)
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+
 # Testing
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
@@ -72,3 +82,4 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }

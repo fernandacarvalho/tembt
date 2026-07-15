@@ -1,5 +1,6 @@
 package com.tembt.ios
 
+import com.tembt.domain.model.AppTab
 import com.tembt.presentation.app.AppViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,12 @@ class AppViewModelIos(private val viewModel: AppViewModel) {
     fun startObserving(onShowWelcomeChanged: (Boolean) -> Unit) {
         scope.launch {
             viewModel.showWelcome.collect { onShowWelcomeChanged(it) }
+        }
+    }
+
+    fun startObservingTabs(onEnabledTabsChanged: (List<AppTab>?) -> Unit) {
+        scope.launch {
+            viewModel.enabledTabs.collect { onEnabledTabsChanged(it) }
         }
     }
 

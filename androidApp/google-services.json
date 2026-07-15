@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "551765589007",
+    "project_id": "tembt-76ae7",
+    "storage_bucket": "tembt-76ae7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551765589007:android:a0c2a2fc22ffa31896f77a",
+        "android_client_info": {
+          "package_name": "com.tembt.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAxsJLEBQ3ZGJywQ_AQUv4lkexPybEclg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
