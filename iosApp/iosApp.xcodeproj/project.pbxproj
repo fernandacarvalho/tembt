@@ -13,7 +13,8 @@
 		B001000000000004 /* MapViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000004 /* MapViewRepresentable.swift */; };
 		B001000000000005 /* MapViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000005 /* MapViewModelHost.swift */; };
 		B001000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000007 /* Assets.xcassets */; };
-		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; };
+		B001000000000018 /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B00100000000000B /* AppViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000D /* AppViewModelHost.swift */; };
 		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
 		B001000000000011 /* ComposeHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000013 /* ComposeHostingView.swift */; };
@@ -53,6 +54,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E001000000000012 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B001000000000018 /* shared.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXGroup section */
 		D001000000000000 = {
@@ -123,11 +138,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F001000000000002 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
-				E001000000000010 /* Run Gradle Build Script */,
 				E001000000000011 /* Copy Compose Resources */,
 				E001000000000002 /* Sources */,
 				E001000000000003 /* Resources */,
 				C001000000000001 /* Frameworks */,
+				E001000000000012 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -190,25 +205,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E001000000000010 /* Run Gradle Build Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Gradle Build Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/../shared/build/XCFrameworks/debug/shared.xcframework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\nif [ \"$CONFIGURATION\" == \"Release\" ]; then\n  ./gradlew :shared:assembleSharedReleaseXCFramework\nelse\n  ./gradlew :shared:assembleSharedDebugXCFramework\nfi\n";
-		};
 		E001000000000011 /* Copy Compose Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
