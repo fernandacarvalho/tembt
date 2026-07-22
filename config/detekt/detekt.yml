@@ -1,0 +1,150 @@
+# Detekt configuration for tembt (KMP)
+# Translates the kmp-code-style standard: indent 4, line length 120, no `!!`,
+# no wildcard imports, trailing commas, no commented-out code, no GlobalScope,
+# no empty catch blocks.
+#
+# `buildUponDefaultConfig = true` in build.gradle.kts means these entries override
+# the bundled defaults; unspecified rules keep their default behavior.
+
+build:
+  maxIssues: 0
+
+comments:
+  active: true
+
+complexity:
+  active: true
+  LongParameterList:
+    active: true
+    # kmp-code-style: no more than 3–4 parameters; use a data class beyond that
+    functionThreshold: 5
+    constructorThreshold: 6
+    ignoreDefaultParameters: true
+    # @Composable functions legitimately take many parameters
+    ignoreAnnotated: ['Composable']
+  LongMethod:
+    active: true
+    # kmp-code-style: max ~30 lines per function
+    threshold: 30
+    # @Composable screens are naturally long
+    ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    active: false
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    # kmp-code-style: never use GlobalScope
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+
+empty-blocks:
+  active: true
+  EmptyCatchBlock:
+    # kmp-code-style: no empty catch blocks
+    active: true
+
+exceptions:
+  active: true
+  SwallowedException:
+    active: true
+  TooGenericExceptionCaught:
+    active: false
+
+naming:
+  active: true
+  ClassNaming:
+    active: true
+    classPattern: '[A-Z][a-zA-Z0-9]*'
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    # @Composable functions use PascalCase by convention
+    ignoreAnnotated: ['Composable']
+  VariableNaming:
+    active: true
+    variablePattern: '[a-z][a-zA-Z0-9]*'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][A-Z0-9_]*'
+  EnumNaming:
+    active: true
+    enumEntryPattern: '[A-Z][a-zA-Z0-9_]*'
+
+potential-bugs:
+  active: true
+
+style:
+  active: true
+  MaxLineLength:
+    # kmp-code-style: max line length 120
+    active: true
+    maxLineLength: 120
+    excludeCommentStatements: false
+  WildcardImport:
+    # kmp-code-style: no star imports
+    active: true
+  ForbiddenComment:
+    # kmp-code-style: no commented-out code (best-effort via markers)
+    active: true
+    comments:
+      - reason: 'Use a tracked issue instead of a TODO/FIXME.'
+        value: 'TODO:'
+      - reason: 'Use a tracked issue instead of a TODO/FIXME.'
+        value: 'FIXME:'
+  ReturnCount:
+    active: true
+    max: 3
+  MagicNumber:
+    active: false
+  UnusedPrivateMember:
+    active: true
+  RedundantVisibilityModifierRule:
+    active: true
+
+# ---------------------------------------------------------------------------
+# Formatting rules (provided by the detekt-formatting plugin, which wraps ktlint).
+# Only the rules that map to the kmp-code-style standard are enabled. The highly
+# opinionated ktlint layout rules (argument wrapping, alignment whitespace) are NOT
+# part of that standard and clash with the existing Compose style, so they stay off.
+# ---------------------------------------------------------------------------
+formatting:
+  active: true
+  autoCorrect: true
+  Indentation:
+    active: true
+    # kmp-code-style: 4-space indentation
+    indentSize: 4
+  NoWildcardImports:
+    # kmp-code-style: no star imports
+    active: true
+  MaximumLineLength:
+    active: true
+    maxLineLength: 120
+  TrailingCommaOnCallSite:
+    # kmp-code-style: trailing commas in multi-line calls
+    active: true
+    useTrailingCommaOnCallSite: true
+  TrailingCommaOnDeclarationSite:
+    active: true
+    useTrailingCommaOnDeclarationSite: true
+  FinalNewline:
+    active: true
+  NoTrailingSpaces:
+    active: true
+  NoUnusedImports:
+    active: true
+  # --- Off: not part of the kmp-code-style standard; too noisy for Compose code ---
+  NoMultipleSpaces:
+    active: false
+  ArgumentListWrapping:
+    active: false
+  ParameterListWrapping:
+    active: false
+  Wrapping:
+    active: false
+  SpacingBetweenDeclarationsWithComments:
+    active: false
+  MultiLineIfElse:
+    active: false
