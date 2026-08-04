@@ -16,6 +16,7 @@ import com.tembt.domain.repository.PlayerRepository
 import com.tembt.domain.repository.PlayersRepository
 import com.tembt.domain.repository.TournamentRepository
 import com.tembt.domain.repository.WindowRepository
+import com.tembt.domain.usecase.ApplyStationaryBackoffUseCase
 import com.tembt.domain.usecase.CalculateDistanceUseCase
 import com.tembt.domain.usecase.GetEnabledTabsUseCase
 import com.tembt.domain.usecase.GetTournamentsUseCase
@@ -68,19 +69,21 @@ val appModule = module {
     factory { CalculateDistanceUseCase() }
     factory { GetLocationUpdateIntervalUseCase() }
     factory { IsCourtOpenUseCase() }
+    factory { ApplyStationaryBackoffUseCase(get()) }
     factory { GetTournamentsUseCase(get()) }
     factory { GetEnabledTabsUseCase(get()) }
     factory {
         LocationMonitoringCoordinator(
-            isCourtOpen          = get(),
-            calculateDistance    = get(),
-            getInterval          = get(),
-            sendLocation         = get(),
-            locationService      = get(),
-            courtRepository      = get(),
-            windowRepository     = get(),
-            playerStorage        = get(),
-            courtScheduleStorage = get()
+            isCourtOpen                    = get(),
+            calculateDistance              = get(),
+            getInterval                    = get(),
+            applyStationaryBackoff         = get(),
+            sendLocation                   = get(),
+            locationService                = get(),
+            courtRepository                = get(),
+            windowRepository               = get(),
+            courtScheduleStorage           = get(),
+            locationMonitoringStateStorage = get(),
         )
     }
 

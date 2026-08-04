@@ -11,7 +11,10 @@ class SendLocationUseCase(
 ) : SendLocation {
     override suspend operator fun invoke(): Result<Unit> {
         println("[TEMBT-DEBUG] SendLocation: chamando getCurrentLocation()")
-        val coords = locationService.getCurrentLocation()
+        // highAccuracy = false: SendLocation always runs right after the coordinator's own
+        // (correctly-tiered) read, so this normally reuses that cached fix rather than
+        // issuing a new platform request.
+        val coords = locationService.getCurrentLocation(highAccuracy = false)
         println("[TEMBT-DEBUG] SendLocation: getCurrentLocation() retornou = $coords")
         val (lat, lng) = coords ?: run {
             println("[TEMBT-DEBUG] SendLocation: ERRO — localização não disponível, abortando envio")

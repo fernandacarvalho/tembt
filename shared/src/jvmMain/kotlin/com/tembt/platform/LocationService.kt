@@ -8,5 +8,5 @@ actual class LocationService : LocationServiceContract {
     actual override fun getPermissionStatus() = LocationPermissionStatus.NOT_DETERMINED
     actual override fun getBackgroundPermissionStatus() = LocationPermissionStatus.NOT_DETERMINED
     actual override fun markPermissionRequested() = Unit
-    actual override fun getCurrentLocation(): Pair<Double, Double>? = null
+    actual override suspend fun getCurrentLocation(highAccuracy: Boolean): Pair<Double, Double>? = null
 }

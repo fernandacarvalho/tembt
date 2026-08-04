@@ -54,14 +54,10 @@ class CourtMonitoringForegroundService : Service() {
             val schedule = scheduleStorage.getSchedule()
 
             while (true) {
-                val now   = Clock.System.now().toLocalDateTime(saoPaulo)
-                val today = now.date
+                val now = Clock.System.now().toLocalDateTime(saoPaulo)
 
-                // TODO: re-enable before production
-                // if (now.hour >= schedule.endHour) break
-
-                val interval = coordinator.runCycle(today)
-                if (interval == null) break  // paused by user or court closed today
+                val interval = coordinator.runCycle(now)
+                if (interval == null) break  // paused by user, court closed today, or past closing hour
 
                 delay(interval.minutes * 60_000L)
             }

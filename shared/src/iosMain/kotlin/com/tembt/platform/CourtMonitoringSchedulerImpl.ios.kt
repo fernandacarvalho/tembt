@@ -30,8 +30,9 @@ import kotlinx.cinterop.ExperimentalForeignApi
  *
  * **Background location**: once the task fires and determines the court is
  * open, iOS requires `allowsBackgroundLocationUpdates = true` on
- * CLLocationManager (set in the Swift layer) and the "Location updates"
- * background mode in Xcode capabilities.
+ * CLLocationManager — set directly in Kotlin in [LocationService.getCurrentLocation],
+ * gated on "Always" authorization — plus the `UIBackgroundModes` `location` entry
+ * in Info.plist.
  */
 @OptIn(ExperimentalForeignApi::class)
 class CourtMonitoringSchedulerImpl : CourtMonitoringScheduler {
