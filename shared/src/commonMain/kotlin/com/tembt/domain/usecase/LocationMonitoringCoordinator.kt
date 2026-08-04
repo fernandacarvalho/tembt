@@ -8,7 +8,6 @@ import com.tembt.domain.repository.WindowRepository
 import com.tembt.platform.CourtScheduleStorage
 import com.tembt.platform.LocationMonitoringStateStorage
 import com.tembt.platform.LocationServiceContract
-import com.tembt.platform.PlayerStorage
 import kotlinx.datetime.LocalDateTime
 
 /**
@@ -41,7 +40,6 @@ class LocationMonitoringCoordinator(
     private val locationService: LocationServiceContract,
     private val courtRepository: CourtRepository,
     private val windowRepository: WindowRepository,
-    private val playerStorage: PlayerStorage,
     private val courtScheduleStorage: CourtScheduleStorage,
     private val locationMonitoringStateStorage: LocationMonitoringStateStorage
 ) {

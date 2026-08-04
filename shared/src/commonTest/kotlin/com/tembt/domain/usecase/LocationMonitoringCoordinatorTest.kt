@@ -8,7 +8,6 @@ import com.tembt.fake.FakeCourtRepository
 import com.tembt.fake.FakeCourtScheduleStorage
 import com.tembt.fake.FakeLocationMonitoringStateStorage
 import com.tembt.fake.FakeLocationService
-import com.tembt.fake.FakePlayerStorage
 import com.tembt.fake.FakeSendLocation
 import com.tembt.fake.FakeWindowRepository
 import kotlinx.coroutines.test.runTest
@@ -32,7 +31,6 @@ class LocationMonitoringCoordinatorTest {
     private val courtRepo        = FakeCourtRepository()
     private val windowRepo       = FakeWindowRepository()
     private val sendLocation     = FakeSendLocation()
-    private val playerStorage    = FakePlayerStorage()
     private val scheduleStorage  = FakeCourtScheduleStorage()
     private val monitoringState  = FakeLocationMonitoringStateStorage()
 
@@ -48,7 +46,6 @@ class LocationMonitoringCoordinatorTest {
         locationService                = locationService,
         courtRepository                = courtRepo,
         windowRepository               = windowRepo,
-        playerStorage                  = playerStorage,
         courtScheduleStorage           = scheduleStorage,
         locationMonitoringStateStorage = monitoringState
     )

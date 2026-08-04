@@ -133,6 +133,7 @@ actual class LocationService(private val context: Context) : LocationServiceCont
                 try {
                     locationManager.requestSingleUpdate(provider, listener, Looper.getMainLooper())
                 } catch (e: SecurityException) {
+                    println("[TEMBT-DEBUG] LocationService.android.requestActiveFix: permissão revogada — ${e.message}")
                     if (continuation.isActive) continuation.resume(null)
                 }
             }
@@ -153,6 +154,7 @@ actual class LocationService(private val context: Context) : LocationServiceCont
             try {
                 locationManager.getLastKnownLocation(provider)
             } catch (e: SecurityException) {
+                println("[TEMBT-DEBUG] LocationService.android.lastKnownFixIfFresh: permissão revogada — ${e.message}")
                 null
             }
         }.maxByOrNull { it.time } ?: return null

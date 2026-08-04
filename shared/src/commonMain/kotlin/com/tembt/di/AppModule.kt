@@ -74,17 +74,16 @@ val appModule = module {
     factory { GetEnabledTabsUseCase(get()) }
     factory {
         LocationMonitoringCoordinator(
-            isCourtOpen                  = get(),
-            calculateDistance            = get(),
-            getInterval                  = get(),
-            applyStationaryBackoff       = get(),
-            sendLocation                 = get(),
-            locationService              = get(),
-            courtRepository              = get(),
-            windowRepository             = get(),
-            playerStorage                = get(),
-            courtScheduleStorage         = get(),
-            locationMonitoringStateStorage = get()
+            isCourtOpen                    = get(),
+            calculateDistance              = get(),
+            getInterval                    = get(),
+            applyStationaryBackoff         = get(),
+            sendLocation                   = get(),
+            locationService                = get(),
+            courtRepository                = get(),
+            windowRepository               = get(),
+            courtScheduleStorage           = get(),
+            locationMonitoringStateStorage = get(),
         )
     }
 
