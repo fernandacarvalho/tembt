@@ -11,12 +11,14 @@ class FakeLocationService(
 
     var markPermissionRequestedCallCount = 0
     var getCurrentLocationCallCount = 0
+    var lastRequestedHighAccuracy: Boolean? = null
 
     override fun getPermissionStatus() = stubbedStatus
     override fun getBackgroundPermissionStatus() = stubbedBackgroundStatus
     override fun markPermissionRequested() { markPermissionRequestedCallCount++ }
-    override fun getCurrentLocation(): Pair<Double, Double>? {
+    override suspend fun getCurrentLocation(highAccuracy: Boolean): Pair<Double, Double>? {
         getCurrentLocationCallCount++
+        lastRequestedHighAccuracy = highAccuracy
         return location
     }
 }

@@ -60,8 +60,8 @@ object KoinHelper : KoinComponent {
         scope.launch {
             try {
                 val saoPaulo = TimeZone.of("America/Sao_Paulo")
-                val today    = Clock.System.now().toLocalDateTime(saoPaulo).date
-                coordinator.runCycle(today)
+                val now      = Clock.System.now().toLocalDateTime(saoPaulo)
+                coordinator.runCycle(now)
             } finally {
                 // Re-arm the alarm for the next day
                 val schedule = storage.getSchedule()

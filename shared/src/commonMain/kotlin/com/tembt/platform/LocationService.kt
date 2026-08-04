@@ -15,6 +15,10 @@ expect class LocationService {
     // so subsequent getPermissionStatus() calls can distinguish NOT_DETERMINED from DENIED.
     fun markPermissionRequested()
 
-    /** Returns the most recently cached device coordinates, or null if unavailable. */
-    fun getCurrentLocation(): Pair<Double, Double>?
+    /**
+     * Actively requests a fresh location fix, or null if unavailable/timed out.
+     * @param highAccuracy When true, requests the platform's most precise (and most
+     * power-hungry) profile; when false, a coarser/low-power profile is used instead.
+     */
+    suspend fun getCurrentLocation(highAccuracy: Boolean): Pair<Double, Double>?
 }

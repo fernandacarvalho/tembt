@@ -35,15 +35,17 @@ struct ContentView: View {
 
 private struct LaunchPlaceholder: View {
     var body: some View {
-        GeometryReader { geometry in
+        ZStack {
             Image("welcome_player")
                 .resizable()
                 .scaledToFill()
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .clipped()
+                .ignoresSafeArea()
+
+            Image("tembt_logo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(.horizontal, 50)
         }
-        .background(Color.black)
-        .ignoresSafeArea()
     }
 }
 

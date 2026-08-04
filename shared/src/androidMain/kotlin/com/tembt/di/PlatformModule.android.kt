@@ -5,6 +5,8 @@ import com.tembt.platform.CourtMonitoringSchedulerImpl
 import com.tembt.platform.CourtScheduleStorage
 import com.tembt.platform.CourtScheduleStorageImpl
 import com.tembt.platform.DeviceIdentityProvider
+import com.tembt.platform.LocationMonitoringStateStorage
+import com.tembt.platform.LocationMonitoringStateStorageImpl
 import com.tembt.platform.LocationService
 import com.tembt.platform.LocationServiceContract
 import com.tembt.platform.PlayerStorage
@@ -18,4 +20,5 @@ val androidPlatformModule = module {
     single<DeviceIdentityProvider> { get<PlayerStorage>() }
     single<CourtScheduleStorage> { CourtScheduleStorageImpl(androidContext()) }
     single<CourtMonitoringScheduler> { CourtMonitoringSchedulerImpl(androidContext()) }
+    single<LocationMonitoringStateStorage> { LocationMonitoringStateStorageImpl(androidContext()) }
 }

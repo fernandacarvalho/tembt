@@ -5,4 +5,11 @@
             android:src="@drawable/welcome_player"
             android:gravity="fill" />
     </item>
+    <item
+        android:left="50dp"
+        android:right="50dp">
+        <bitmap
+            android:src="@drawable/tembt_logo"
+            android:gravity="center" />
+    </item>
 </layer-list>

@@ -41,6 +41,10 @@
     <array>
         <string>com.tembt.court.monitoring</string>
     </array>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>location</string>
+    </array>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
     <key>CFBundleURLTypes</key>

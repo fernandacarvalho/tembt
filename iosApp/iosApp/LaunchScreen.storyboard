@@ -14,12 +14,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="welcome_player" id="IV0-dF-oUB">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="welcome_player" id="JW1-bg-ndK">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="tembt_logo" translatesAutoresizingMaskIntoConstraints="NO" id="IV0-dF-oUB">
+                                <rect key="frame" x="50" y="298" width="275" height="71"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="IV0-dF-oUB" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="50" id="aA1-le-ad1"/>
+                            <constraint firstItem="IV0-dF-oUB" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" constant="-50" id="bB2-tr-ai1"/>
+                            <constraint firstItem="IV0-dF-oUB" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cC3-cx-ee1"/>
+                            <constraint firstItem="IV0-dF-oUB" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="dD4-cy-ee1"/>
+                            <constraint firstItem="IV0-dF-oUB" firstAttribute="height" secondItem="IV0-dF-oUB" secondAttribute="width" multiplier="1022:1492" id="eE5-ar-at1"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
@@ -30,5 +40,6 @@
     </scenes>
     <resources>
         <image name="welcome_player" width="1125" height="2001"/>
+        <image name="tembt_logo" width="1492" height="1022"/>
     </resources>
 </document>
