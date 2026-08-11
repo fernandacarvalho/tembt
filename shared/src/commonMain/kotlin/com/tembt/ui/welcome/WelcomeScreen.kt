@@ -28,9 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -40,6 +38,7 @@ import com.tembt.presentation.welcome.WelcomeUiEvent
 import com.tembt.presentation.welcome.WelcomeUiState
 import com.tembt.presentation.welcome.WelcomeViewModel
 import com.tembt.shared.generated.resources.Res
+import com.tembt.shared.generated.resources.tembt_logo
 import com.tembt.shared.generated.resources.welcome_button
 import com.tembt.shared.generated.resources.welcome_name_placeholder
 import com.tembt.shared.generated.resources.welcome_player
@@ -86,13 +85,11 @@ fun WelcomeScreen(
         ) {
             Spacer(Modifier.height(24.dp))
 
-            Text(
-                text = stringResource(Res.string.welcome_title),
-                fontSize = 64.sp,
-                fontWeight = FontWeight.Black,
-                fontStyle = FontStyle.Italic,
-                color = Color.White,
-                lineHeight = 64.sp
+            Image(
+                painter = painterResource(Res.drawable.tembt_logo),
+                contentDescription = stringResource(Res.string.welcome_title),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.height(150.dp),
             )
 
             Spacer(Modifier.height(12.dp))
