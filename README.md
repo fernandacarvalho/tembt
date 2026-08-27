@@ -1,4 +1,4 @@
-# tembt
+# TemBT
 
 Mobile App for iOS and Android, built with Kotlin Multiplatform (KMP).
 Designed to make it easier for members to meet up and play beach tennis at the designated meeting point.
