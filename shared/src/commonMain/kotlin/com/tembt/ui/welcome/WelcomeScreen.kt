@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -83,16 +84,18 @@ fun WelcomeScreen(
                 .imePadding()
                 .padding(horizontal = 32.dp)
         ) {
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.weight(1f))
 
             Image(
                 painter = painterResource(Res.drawable.tembt_logo),
                 contentDescription = stringResource(Res.string.welcome_title),
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.height(150.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .height(180.dp),
             )
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.weight(1f))
 
             Text(
                 text = stringResource(Res.string.welcome_subtitle),
@@ -146,7 +149,7 @@ fun WelcomeScreen(
                 )
             }
 
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(50.dp))
 
             TembtButton(
                 title = stringResource(Res.string.welcome_button),

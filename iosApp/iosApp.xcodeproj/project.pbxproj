@@ -14,15 +14,29 @@
 		B001000000000005 /* MapViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000005 /* MapViewModelHost.swift */; };
 		B001000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000007 /* Assets.xcassets */; };
 		B001000000000008 /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; };
-		B001000000000018 /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B00100000000000B /* AppViewModelHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00100000000000D /* AppViewModelHost.swift */; };
 		B00100000000000E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000010 /* AppTheme.swift */; };
 		B001000000000011 /* ComposeHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A001000000000013 /* ComposeHostingView.swift */; };
 		B001000000000014 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000014 /* Localizable.strings */; };
 		B001000000000017 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A001000000000017 /* LaunchScreen.storyboard */; };
+		B001000000000018 /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A001000000000008 /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F683D28A3008135900E2AC9C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F683D2893008135900E2AC9C /* GoogleService-Info.plist */; };
 		F683D28D3008151300E2AC9C /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = F683D28C3008151300E2AC9C /* FirebaseRemoteConfig */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E001000000000012 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B001000000000018 /* shared.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		A001000000000001 /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
@@ -54,20 +68,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		E001000000000012 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				B001000000000018 /* shared.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXGroup section */
 		D001000000000000 = {
@@ -207,6 +207,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		E001000000000011 /* Copy Compose Resources */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
